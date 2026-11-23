@@ -51,6 +51,9 @@
   @media (max-width: 900px) { .zwei { grid-template-columns: 1fr; } .steuerung { margin-left: 0; } }
   h2 { font-size: 16px; font-weight: 600; margin: 0 0 12px; }
   svg { display: block; width: 100%; height: auto; }
+  .zeitleiste { display: flex; }
+  #zeitachse { width: 34px; height: 120px; flex: none; }
+  .zeitscroll { flex: 1; min-width: 0; overflow-x: auto; }
   .kreis { stroke: var(--flaeche); stroke-width: .25; cursor: pointer; }
   .kreis:hover { stroke: var(--text); stroke-width: 1; }
   .kreis.gewaehlt { stroke: var(--text); stroke-width: 2.2; }
@@ -133,7 +136,7 @@
 <main>
   <div class="karte zeit kein-druck">
     <h2 id="zeittitel">Zeitstrahl</h2>
-    <svg id="zeitstrahl" viewBox="0 0 1240 120"></svg>
+    <div class="zeitleiste"><svg id="zeitachse" viewBox="0 0 34 120"></svg><div class="zeitscroll" id="zeitscroll"><svg id="zeitstrahl"></svg></div></div>
     <div class="hinweis" id="zeithinweis"></div>
   </div>
   <div class="karten4" id="kacheln"></div>
@@ -284,6 +287,8 @@ function aufbauen() {
   $("drucken").onclick = () => { druckVorbereiten(); window.print(); };
   window.addEventListener("beforeprint", druckVorbereiten);
   window.addEventListener("afterprint", druckZuruecksetzen);
+  window.addEventListener("resize", zeitSichtbar);
+  window.addEventListener("load", zeitSichtbar);
   $("thema").onclick = () => { const i = THEMEN.findIndex(x => x[0] === thema); themaSetzen(THEMEN[(i + 1) % 3][0]); zeichnen(); };
   matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => { if (thema === "system") { farbenLesen(); zeichnen(); } });
   $("suche").oninput = ev => { suche = ev.target.value.toLowerCase(); zeichnen(); };
@@ -319,23 +324,36 @@ function anteile(w) {                        // Anteil der Kreise im gewählten 
   return [1, 2, 3].map(o => s.length ? s.filter(x => x === o).length / s.length * 100 : 0);
 }
 
-function zeitstrahl() {
-  const B = 1240, H = 120, li = 34, re = 6, ob = 8, un = 22, n = D.wochen.length - D.ab, bw = (B - li - re) / n;
+const ZEIT_BW = 10;                          // Breite einer Woche im Zeitstrahl (Pixel)
+function zeitSichtbar() {                    // gewählte Woche in den sichtbaren Bereich holen
+  const sc = $("zeitscroll"), xw = (zustand.w - D.ab) * ZEIT_BW;
+  if (xw < sc.scrollLeft || xw + ZEIT_BW > sc.scrollLeft + sc.clientWidth) sc.scrollLeft = xw - sc.clientWidth * 0.8;
+}
+
+function zeitstrahl() {                     // feste Breite je Woche, waagrecht scrollbar; die Achse steht fest
+  const bw = ZEIT_BW, H = 120, re = 30, ob = 8, un = 22, n = D.wochen.length - D.ab, B = n * bw + re;
   const y = p => ob + (1 - p / 100) * (H - ob - un);                 // Skala bis 100 %
-  let svg = "";
-  for (const p of [0, 50, 100]) svg += `<line x1="${li}" x2="${B - re}" y1="${y(p)}" y2="${y(p)}" stroke="${C.raster}"/><text x="${li - 5}" y="${y(p) + 4}" font-size="10" text-anchor="end" fill="${C.t2}">${p} %</text>`;
+  let svg = "", achse = "";
+  for (const p of [0, 50, 100]) {
+    svg += `<line x1="0" x2="${B}" y1="${y(p)}" y2="${y(p)}" stroke="${C.raster}"/>`;
+    achse += `<text x="29" y="${y(p) + 4}" font-size="10" text-anchor="end" fill="${C.t2}">${p} %</text>`;
+  }
   for (let i = D.ab; i < D.wochen.length; i++) {
-    const x = li + (i - D.ab) * bw, [a1, a2, a3] = anteile(i);
+    const x = (i - D.ab) * bw, [a1, a2, a3] = anteile(i);
     if (i === zustand.w) svg += `<rect x="${x - 1}" y="${ob - 4}" width="${bw + 2}" height="${H - ob - un + 6}" fill="${C.text}" opacity=".12"/>`;
     [[a1 + a2 + a3, 1], [a2 + a3, 2], [a3, 3]].forEach(([a, o]) => { if (a > 0) svg += `<rect x="${x}" y="${y(a)}" width="${Math.max(bw - 0.6, 1)}" height="${y(0) - y(a)}" fill="${FARBE[o]}"/>`; });
     svg += `<rect class="woche" data-w="${i}" x="${x}" y="${ob}" width="${bw}" height="${H - ob - un}" fill="transparent"/>`;
     const d = new Date(D.wochen[i] + "T00:00:00Z");
     if (d.getUTCDate() <= 7 && d.getUTCMonth() % 3 === 0) svg += `<text x="${x}" y="${H - 6}" font-size="10" fill="${C.t2}">${MONATE[d.getUTCMonth()]} ${String(d.getUTCFullYear()).slice(2)}</text>`;
   }
-  $("zeitstrahl").innerHTML = svg;
+  const s = $("zeitstrahl");
+  s.setAttribute("viewBox", `0 0 ${B} ${H}`); s.style.width = B + "px"; s.style.height = H + "px";
+  s.innerHTML = svg;
+  $("zeitachse").innerHTML = achse;
+  zeitSichtbar();
   const gebiet = zustand.g < 0 ? "" : ` in ${D.land.einheiten[zustand.g].name}`;
   $("zeittitel").textContent = `Zeitstrahl: ${D.erreger[zustand.e]}${gebiet}`;
-  $("zeithinweis").textContent = `Anteil der Kreise je Empfehlung im Zeitverlauf.`;
+  $("zeithinweis").textContent = `Anteil der Kreise je Empfehlung im Zeitverlauf. Seitlich scrollen für frühere Wochen.`;
 }
 
 function usp() {
