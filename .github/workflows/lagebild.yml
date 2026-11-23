@@ -35,9 +35,6 @@ jobs:
     needs: aktualisieren
     if: always() && needs.aktualisieren.result != 'failure' && needs.aktualisieren.result != 'cancelled'
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.veroeffentlichen.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -46,5 +43,13 @@ jobs:
       - uses: actions/upload-pages-artifact@v3
         with:
           path: website
-      - id: veroeffentlichen
+  veroeffentlichen:                # eigener Schritt: das Paket ist fertig abgelegt, bevor es gesucht wird
+    needs: website
+    if: always() && needs.website.result == 'success'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.pages.outputs.page_url }}
+    steps:
+      - id: pages
         uses: actions/deploy-pages@v4
