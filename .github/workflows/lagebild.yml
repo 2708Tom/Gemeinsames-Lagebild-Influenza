@@ -1,0 +1,50 @@
+# Jeden Donnerstag: neueste RKI-Daten holen, Lagebild neu rechnen und als Website veröffentlichen.
+# Von Hand starten: Reiter „Actions“, „Lagebild aktualisieren“, „Run workflow“.
+name: Lagebild aktualisieren
+on:
+  schedule:
+    - cron: "0 5 * * 4"          # donnerstags 5 Uhr UTC (6 Uhr Winterzeit, 7 Uhr Sommerzeit)
+  workflow_dispatch:
+  push:
+    branches: [main]             # nach eigenem Hochladen nur die Website neu veröffentlichen
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+concurrency:
+  group: lagebild
+  cancel-in-progress: false
+jobs:
+  aktualisieren:
+    if: github.event_name != 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r Technik/requirements.txt
+      - run: python Technik/04_Skripte/lagebild_aktualisieren.py
+      - name: Neuen Stand speichern
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git diff --cached --quiet || { git commit -m "Lagebild aktualisiert"; git push; }
+  website:
+    needs: aktualisieren
+    if: always() && needs.aktualisieren.result != 'failure' && needs.aktualisieren.result != 'cancelled'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.veroeffentlichen.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - run: mkdir website && cp Technik/08_Lagebild/Lagebild.html website/index.html
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: website
+      - id: veroeffentlichen
+        uses: actions/deploy-pages@v4

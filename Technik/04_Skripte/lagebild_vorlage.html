@@ -1,0 +1,616 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<meta name="robots" content="noindex, nofollow">
+<title>Gemeinsames Lagebild Influenza</title>
+<style>
+  :root {
+    /* Farben der empfohlenen Maßnahme nach DIN EN ISO 22324 (Grün, Gelb, Orange, Rot), gedämpft; keine Daten: weiß, grau schraffiert */
+    --normal: #DCE5DE; --erhoeht: #F2C14E; --orange: #E8862E; --deutlich: #C00009; --grau: #808080;
+    --keine: repeating-linear-gradient(135deg, var(--flaeche) 0 3px, var(--schraffur) 3px 4px);
+    --text: #1d1d1f; --text-2: #63666b; --linie: #ececef; --flaeche: #ffffff; --hinter: #f6f6f8;
+    --raster: #eeeeef; --raster-2: #c4c4c8; --zeile: #f1f1f3; --hover: #fafafb; --gewaehlt: #f2f2f5; --eingabe: #dcdce0;
+    --landlinie: #a9a9ae; --schraffur: #a9a9ae; --warn-bg: #FFF4E5; --warn-text: #8a4a00; --leicht: #b07d00;
+  }
+  /* Dunkel: nach Systemeinstellung, außer der Knopf hat „Hell“ gewählt; oder per Knopf „Dunkel“ */
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+    --normal: #4E5D52; --text: #e6e6e9; --text-2: #a0a3a9; --linie: #2e3034; --flaeche: #1b1c1f; --hinter: #121316;
+    --raster: #2a2b2f; --raster-2: #4a4c52; --zeile: #26272b; --hover: #232428; --gewaehlt: #2b2d32; --eingabe: #3a3c41;
+    --landlinie: #6a6d73; --schraffur: #5a5c62; --warn-bg: #3a2a17; --warn-text: #f2b46b; --leicht: #e2b23a; } }
+  :root[data-theme="dark"] {
+    --normal: #4E5D52; --text: #e6e6e9; --text-2: #a0a3a9; --linie: #2e3034; --flaeche: #1b1c1f; --hinter: #121316;
+    --raster: #2a2b2f; --raster-2: #4a4c52; --zeile: #26272b; --hover: #232428; --gewaehlt: #2b2d32; --eingabe: #3a3c41;
+    --landlinie: #6a6d73; --schraffur: #5a5c62; --warn-bg: #3a2a17; --warn-text: #f2b46b; --leicht: #e2b23a; color-scheme: dark; }
+  :root[data-theme="light"] { color-scheme: light; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--hinter); color: var(--text); font: 14px/1.5 -apple-system, "Segoe UI", Arial, sans-serif; }
+  header { position: relative; background: var(--flaeche); border-bottom: 1px solid var(--linie); padding: 22px 28px 20px; display: flex; flex-wrap: wrap; gap: 14px 32px; align-items: flex-end; }
+  header h1 { font-size: 22px; font-weight: 650; letter-spacing: -0.01em; margin: 0; }
+  header .usp { color: var(--text-2); font-size: 13px; line-height: 1.6; max-width: 820px; margin-top: 8px; }
+  header .stand { color: var(--text-2); font-size: 12px; margin-top: 10px; }
+  .thema { position: absolute; top: 10px; right: 12px; border: none; background: none; padding: 3px 7px; font-size: 15px; line-height: 1; color: var(--text-2); border-radius: 6px; }
+  .thema:hover { background: var(--hover); color: var(--text); }
+  .kopfzeile { display: flex; justify-content: space-between; align-items: baseline; }
+  .exportlink { font-size: 12px; color: var(--text-2); text-decoration: none; border: 1px solid var(--linie); border-radius: 6px; padding: 2px 8px; }
+  .exportlink:hover { color: var(--text); background: var(--hover); }
+  .nurdruck { display: none; }
+  .steuerung { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-left: auto; }
+  select, button, input { font: inherit; border: 1px solid var(--eingabe); background: var(--flaeche); border-radius: 8px; padding: 6px 12px; color: var(--text); }
+  button { cursor: pointer; }
+  main { max-width: 1280px; margin: 0 auto; padding: 24px 20px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 20px; }
+  main > *, .zwei > *, .usp-grid > * { min-width: 0; }
+  .karten4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
+  .kachel, .karte { background: var(--flaeche); border: 1px solid var(--linie); border-radius: 12px; padding: 18px 20px; }
+  .kachel .titel { color: var(--text-2); font-size: 13px; font-weight: 500; }
+  .kachel .wert { font-size: 28px; font-weight: 600; margin-top: 4px; letter-spacing: -0.01em; }
+  .kachel .klein { color: var(--text-2); font-size: 12px; }
+  .zwei { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: 20px; }
+  @media (max-width: 900px) { .zwei { grid-template-columns: 1fr; } .steuerung { margin-left: 0; } }
+  h2 { font-size: 16px; font-weight: 600; margin: 0 0 12px; }
+  svg { display: block; width: 100%; height: auto; }
+  .kreis { stroke: var(--flaeche); stroke-width: .25; cursor: pointer; }
+  .kreis:hover { stroke: var(--text); stroke-width: 1; }
+  .kreis.gewaehlt { stroke: var(--text); stroke-width: 2.2; }
+  .land { fill: none; stroke: var(--landlinie); stroke-width: .6; pointer-events: none; }
+  .kreis.fremd { opacity: .18; pointer-events: none; }
+  .kreis, .land { transition: opacity .2s; }
+  .link { color: inherit; text-decoration: underline; text-decoration-color: #b0b0b5; cursor: pointer; }
+  .empfehlung { font-size: 12px; color: var(--text-2); margin: -4px 0 6px; }
+  .legende { display: flex; flex-wrap: wrap; gap: 14px; font-size: 12px; color: var(--text-2); margin-top: 8px; }
+  .legende span::before { content: ""; display: inline-block; width: 11px; height: 11px; border-radius: 2px; margin-right: 5px; vertical-align: -1px; background: var(--f); border: 1px solid var(--raster-2); }
+  .badge { display: inline-block; padding: 1px 8px; border-radius: 10px; font-size: 12px; font-weight: 600; }
+  .s0 { background: var(--normal); color: var(--text); } .s1 { background: var(--erhoeht); color: #000; } .s2 { background: var(--orange); color: #000; } .s3 { background: var(--deutlich); color: #fff; } .sx { background: var(--keine); color: var(--text); border: 1px solid #c8c8cc; }
+  .detail dl { display: grid; grid-template-columns: max-content 1fr; gap: 5px 18px; margin: 10px 0 14px; }
+  .detail dt { color: var(--text-2); } .detail dd { margin: 0; }
+  .hinweis { color: var(--text-2); font-size: 12px; }
+  .chip { display: inline-block; padding: 0 7px; margin: 0 4px 2px 0; border: 1px solid var(--linie); border-radius: 9px; font-size: 11px; color: var(--text-2); white-space: nowrap; cursor: help; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th, td { text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--zeile); vertical-align: top; }
+  th { color: var(--text-2); font-weight: 500; font-size: 12px; position: sticky; top: 0; background: var(--flaeche); border-bottom: 1px solid var(--linie); }
+  td.zahl, th.zahl { text-align: right; font-variant-numeric: tabular-nums; }
+  tbody tr { cursor: pointer; } tbody tr:hover { background: var(--hover); } tbody tr.gewaehlt { background: var(--gewaehlt); }
+  .tabelle { max-height: 520px; overflow: auto; }
+  .zeit rect.woche { cursor: pointer; }
+  .usp-grid { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: 20px; align-items: start; }
+  @media (max-width: 900px) { .usp-grid { grid-template-columns: 1fr; } }
+  .usp-liste { margin: 0; padding-left: 18px; } .usp-liste li { margin-bottom: 6px; }
+  .matrix { border-collapse: separate; border-spacing: 3px; width: auto; font-size: 12px; margin: 4px 0 10px; }
+  .matrix th, .matrix td { border: none; padding: 5px 9px; text-align: center; position: static; background: none; }
+  .matrix td.m0 { background: var(--normal); } .matrix td.m1 { background: var(--erhoeht); color: #1d1d1f; } .matrix td.m2 { background: var(--orange); color: #1d1d1f; } .matrix td.m3 { background: var(--deutlich); color: #fff; }
+  .matrix td.aktiv { outline: 2.5px solid var(--text); outline-offset: -2.5px; font-weight: 700; }
+  .matrix td.blass { opacity: .35; }
+  .marke { font-size: 9px; letter-spacing: -1px; margin-right: 4px; color: var(--leicht); }
+  .marke.m2 { color: var(--deutlich); }
+  .warnung { display: flex; gap: 10px; align-items: center; background: var(--warn-bg); border: 1px solid #E8862E; border-left: 6px solid #E8862E; border-radius: 8px; padding: 9px 12px; margin: 4px 0 10px; }
+  .warnung .zeichen { font-size: 24px; line-height: 1; color: #E8862E; }
+  .warnung b { font-size: 15px; }
+  .chip.warn { background: var(--warn-bg); border-color: #E8862E; color: var(--warn-text); font-weight: 600; }
+  details.mehr { font-size: 12px; color: var(--text-2); margin: 4px 0 8px; }
+  details.mehr summary { cursor: pointer; }
+  details.mehr p { margin: 6px 0; }
+  details.mehr ul { margin: 4px 0 6px; padding-left: 20px; }
+  #tip { position: fixed; pointer-events: none; background: var(--text); color: var(--flaeche); font-size: 12px; padding: 4px 8px; border-radius: 5px; display: none; }
+  footer { color: var(--text-2); font-size: 12px; max-width: 1280px; margin: 0 auto; padding: 0 20px 32px; }
+  footer details.mehr { max-width: 900px; line-height: 1.6; }
+  @page { size: A4 landscape; margin: 10mm; }
+  @media print {
+    * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    body { background: #fff; zoom: .58; }
+    header { padding: 0 0 8px; border: none; }
+    .thema, .steuerung, .kein-druck, #suche, #allgemein, .exportlink, #tip, details.mehr:not(footer details) { display: none !important; }
+    .nurdruck { display: block; color: var(--text); font-weight: 600; }
+    main { padding: 0; gap: 12px; max-width: none; }
+    .kachel, .karte { border-color: #ddd; padding: 10px 12px; break-inside: avoid; }
+    .zwei { grid-template-columns: minmax(0, 5fr) minmax(0, 6fr) !important; }
+    .karte, .kachel { break-inside: avoid; }
+    .laenderkarte { order: 1; } .zwei { order: 2; break-before: page; } .kreiskarte { order: 3; break-before: page; }
+    .tabelle { max-height: none !important; overflow: visible; }
+    tr.druck-aus { display: none; }
+    th { position: static; }
+    footer { padding: 0; break-before: page; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <button id="drucken" class="thema" style="right:44px" title="Als PDF speichern oder drucken"><svg viewBox="0 0 16 16" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.4" style="display:inline;vertical-align:-2px"><path d="M4 6V2h8v4"/><rect x="2" y="6" width="12" height="6" rx="1.5"/><path d="M4 10h8v4H4z"/></svg></button>
+  <button id="thema" class="thema" title="Darstellung wie im System">◐</button>
+  <div>
+    <h1>Gemeinsames Lagebild Influenza</h1>
+    <div class="usp">Projektarbeit von Tom Thum in der Lehrveranstaltung „Epidemiologische Gefahren“ bei Prof. Dr. Dr. Alexander Lechleuthner, Institut für Rettungsingenieurwesen und Gefahrenabwehr, Technische Hochschule Köln.</div>
+    <div class="stand" id="stand"></div>
+    <div class="stand nurdruck" id="druckinfo"></div>
+  </div>
+  <div class="steuerung">
+    <select id="gebiet" aria-label="Gebiet"></select>
+    <select id="woche" aria-label="Stichtag"></select>
+    <button id="aktuell">Aktuell</button>
+  </div>
+</header>
+<main>
+  <div class="karte zeit kein-druck">
+    <h2 id="zeittitel">Zeitstrahl</h2>
+    <svg id="zeitstrahl" viewBox="0 0 1240 120"></svg>
+    <div class="hinweis" id="zeithinweis"></div>
+  </div>
+  <div class="karten4" id="kacheln"></div>
+  <div class="zwei">
+    <div class="karte">
+      <h2 id="kartentitel"></h2>
+      <svg id="karte"></svg>
+      <div class="legende">
+        <b style="font-weight:600;color:var(--text)">Empfohlene Maßnahme:</b>
+        <span style="--f:var(--normal)">keine Maßnahme</span><span style="--f:var(--erhoeht)">beobachten</span><span style="--f:var(--orange)">prüfen</span>
+        <span style="--f:var(--deutlich)">prüfen und informieren</span><span style="--f:var(--keine)">keine Daten</span>
+        <b style="font-weight:400">↗ ↘ deutlicher Anstieg oder Rückgang in 3 Wochen</b>
+      </div>
+    </div>
+    <div class="karte detail" id="detail"></div>
+  </div>
+  <div class="karte laenderkarte">
+    <h2>Bundesländer</h2>
+    <div class="tabelle" style="max-height:none"><table id="laender"></table></div>
+  </div>
+  <div class="karte kreiskarte">
+    <div class="kopfzeile"><h2 id="kreistitel">Alle Kreise</h2><a id="csv" class="exportlink" href="#" title="Kreistabelle wie angezeigt als CSV (Excel)">CSV ↓</a></div>
+    <input id="suche" type="search" placeholder="Kreis suchen …" aria-label="Kreis suchen" style="width:220px;margin-bottom:8px">
+    <span class="hinweis" id="allgemein" style="margin-left:12px"></span>
+    <div class="tabelle"><table id="tabelle"></table></div>
+  </div>
+  <div class="karte kein-druck">
+    <h2>Was dieses Lagebild anders macht</h2>
+    <div class="usp-grid">
+      <ol class="usp-liste">
+        <li><b>Zwei Fragen statt einer Zahl:</b> Wie viel ist da (Last)? Ist das ungewöhnlich (Erwartung)? Beides zusammen ergibt die Empfehlung.</li>
+        <li><b>Kreis und Land</b> nach derselben Methode.</li>
+        <li><b>Last nach europäischem Standard</b> (MEM).</li>
+        <li><b>Erwartung je Kreis und Jahreszeit.</b></li>
+        <li><b>Rot bleibt die Ausnahme.</b></li>
+        <li><b>Prognose mit ehrlichem Bereich</b> und Warnung, wenn das Modell die Lage nicht kennt.</li>
+      </ol>
+      <div>
+        <svg id="uspgrafik" viewBox="0 0 560 230"></svg>
+        <div class="hinweis" id="usptext"></div>
+      </div>
+    </div>
+  </div>
+</main>
+<footer>
+  <details class="mehr"><summary><b>Methode und Daten</b></summary>
+  <p><b>Empfohlene Maßnahme (Farbe):</b> Sie ergibt sich aus zwei Fragen: Wie viel Influenza ist da (Last), und liegt das deutlich über der Erwartung?</p>
+  <ul>
+    <li>Last niedrig: keine Maßnahme; deutlich über der Erwartung: beobachten.</li>
+    <li>Last mittel: beobachten; deutlich über der Erwartung: prüfen.</li>
+    <li>Last hoch: prüfen; deutlich über der Erwartung: prüfen und informieren.</li>
+  </ul>
+  <p><b>Last:</b> gemeldete Fälle je 100.000 Einwohner und Woche, gemittelt über die letzten drei Wochen. Die Grenzen für „mittel“ und „hoch“ stammen aus der Moving Epidemic Method (MEM), dem Standard der europäischen Grippe-Überwachung (Vega et al. 2013 und 2015). Sie werden aus den höchsten Wochenwerten früherer Saisons berechnet: mittel = MEM „medium“, hoch = MEM „high“.</p>
+  <p>Genutzt werden die Saisons ab 2023, weil seit der Pandemie deutlich mehr getestet wird. Die Grenzen gelten im Sommer wie im Winter.</p>
+  <p><b>Erwartung:</b> Ein Modell (XGBoost) schätzt, wie viele Fälle in einem Kreis gerade normal wären. Es kennt dafür Stand und Trend des Kreises, die Jahreszeit und die Lage im übrigen Bundesgebiet in derselben Woche. Verglichen wird gemeldet / erwartet über die letzten drei Wochen.</p>
+  <p>„Leicht darüber“ heißt: so hoch wie im selben Kalendermonat nur in 10 % der Fälle, „deutlich darüber“: nur in 2 % (Saisons ab 2023). Diese 2 % sind eine Setzung: Auch ohne besonderes Ereignis liegen so viele Kreis-Wochen darüber. „Deutlich“ heißt also ungewöhnlich, nicht Ausbruch.</p>
+  <p><b>Abwasser:</b> Influenza A und B im Abwasser (AMELAG, seit der Saison 2024) ist eine zweite Quelle, die nicht davon abhängt, wie viel getestet wird. Ist es erhöht, gilt ein Kreis schon ab den obersten 5 % statt 2 % als deutlich darüber.</p>
+  <p><b>Länder:</b> Jedes Land wird nach derselben Methode bewertet, mit den Fällen aller seiner Kreise. Verglichen wird mit dem übrigen Bundesgebiet; beim Abwasser zählt das Mittel der Kreise mit Messstelle.</p>
+  <p><b>Prognose:</b> Das Modell sagt den Verlauf 1 bis 7 Wochen voraus und kennt dafür nur, was am Stichtag bekannt ist. Kurzfristig wird es mit dem letzten Stand gemischt („bleibt wie zuletzt“), weil dieser nach einer Woche oft genauer ist. In der grauen Fläche lag der gemeldete Wert im Test an früheren Saisons in 8 von 10 Fällen.</p>
+  <p><b>Pfeil (↗ ↘):</b> Die Prognose für drei Wochen liegt deutlich über oder unter dem Stand, und die letzte Meldewoche zeigt schon in diese Richtung.</p>
+  <p><b>Ungewohnte Lage:</b> Liegt der Stand höher als in 99 % der Wochen früherer Saisons in derselben Jahreszeit, kennt das Modell so eine Lage nicht. Im Test war die Prognose dort viermal so ungenau. Statt einer Prognose zeigt die Website dann, wie es in ähnlichen Lagen früherer Saisons weiterging.</p>
+  <p><b>Grenzen:</b> Ob eine Empfehlung im Einzelfall richtig lag, lässt sich mit offenen Daten nicht prüfen; Ausbruchsmeldungen der Gesundheitsämter sind nicht öffentlich. Die Farben folgen DIN EN ISO 22324 (Grün, Gelb, Orange, Rot); Stufe und Zahl stehen immer dabei.</p>
+  <p><b>Empfehlung, nicht Anordnung:</b> Beobachten, prüfen und informieren sind Empfehlungen. Die Daten zeigen nur, wann etwas auffällig ist; über Maßnahmen entscheidet die zuständige Behörde.</p>
+  <p><b>Daten:</b> RKI SurvStat (Meldefälle), RKI AMELAG (Abwasser), BKG (Kreisgrenzen). Die jüngsten Wochen sind vorläufig, Nachmeldungen sind möglich.</p>
+  </details>
+</footer>
+<div id="tip"></div>
+<script>
+const D = /*__DATEN__*/null;
+const STUFEN = ["wie erwartet", "leicht über der Erwartung", "deutlich über der Erwartung"];
+const FARBE = ["#DCE5DE", "#F2C14E", "#E8862E", "#C00009"], KEINE = "url(#schraffur)";
+// Farben für die Grafiken aus den CSS-Variablen (hell oder dunkel); nach jedem Wechsel neu lesen und neu zeichnen
+let C = {};
+function farbenLesen() {
+  const st = getComputedStyle(document.documentElement), v = n => st.getPropertyValue("--" + n).trim();
+  C = { text: v("text"), t2: v("text-2"), flaeche: v("flaeche"), raster: v("raster"), raster2: v("raster-2"), warn: v("warn-text"), leicht: v("leicht") };
+  FARBE[0] = v("normal");
+}
+const THEMEN = [["system", "◐", "Darstellung wie im System"], ["light", "☀", "Darstellung hell"], ["dark", "☾", "Darstellung dunkel"]];
+let thema = "system";
+try { thema = localStorage.getItem("lagebild-thema") || "system"; } catch (e) {}
+function themaSetzen(t) {
+  thema = t;
+  if (t === "system") document.documentElement.removeAttribute("data-theme"); else document.documentElement.setAttribute("data-theme", t);
+  try { localStorage.setItem("lagebild-thema", t); } catch (e) {}
+  const b = document.getElementById("thema"), x = THEMEN.find(x => x[0] === t);
+  if (b) { b.textContent = x[1]; b.title = x[2] + " (Klick wechselt)"; }
+  farbenLesen();
+}
+themaSetzen(thema);
+const ABW = ["nicht verfügbar", "unauffällig", "erhöht"];
+const EINORDNUNG = ["keine Maßnahme", "beobachten", "prüfen", "prüfen und informieren"], LAST = ["niedrig", "mittel", "hoch"];
+const PFEIL = { 1: "↗", "-1": "↘" };
+const HINWEISE = [[1, "vorläufig", "Jüngste drei Wochen: Nachmeldungen möglich"],
+                  [4, "wenige Fälle", "Unter 20 Fällen: Die Abweichung schwankt stark"],
+                  [8, "ungewohnte Lage", "Ungewöhnlich hoch für diese Jahreszeit: keine verlässliche Prognose"]];
+const KREISBEZOGEN = 12;
+const MONATE = ["Jan", "Feb", "Mär", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dez"];
+// g: Gebiet (-1 Deutschland, sonst Land), d: Detailansicht für Kreis ("k") oder Land ("l")
+let zustand = { e: "Influenza", w: D.wochen.length - 1, k: D.kreise.findIndex(k => k.name === "SK Köln"), g: -1, d: "k" }, suche = "";
+
+const $ = id => document.getElementById(id);
+const zahl = (v, n = 1) => v == null ? "" : v.toLocaleString("de-DE", { minimumFractionDigits: n, maximumFractionDigits: n });
+const faktor = v => v == null ? "" : `${zahl(v, 1)}-fach`;
+const datum = s => { const [y, m, d] = s.split("-"); return `${d}.${m}.${y}`; };
+const kw = s => { const d = new Date(s + "T00:00:00Z"); d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));
+  const j = new Date(Date.UTC(d.getUTCFullYear(), 0, 1)); return [Math.ceil(((d - j) / 864e5 + 1) / 7), d.getUTCFullYear()]; };
+const badge = o => o == null ? '<span class="badge sx">keine Daten</span>' : `<span class="badge s${o}">${EINORDNUNG[o]}</span>`;
+// Kreise (art "k") und Länder (art "l") haben dieselben Felder
+const quelle = art => { const e = zustand.e, X = art === "l" ? D.land : D;
+  return { art, E: art === "l" ? D.land.einheiten : D.kreise, L: X.lage[e], inz: X.inz[e], prog: X.prog[e], mae: X.mae[e], mp: X.mae_pers[e], band: X.band[e], U: X.ungewohnt,
+           G: X.last_grenzen, F: X.faktor_grenzen }; };
+const imGebiet = i => zustand.g < 0 || D.kreise[i].land === zustand.g;
+function richtung(Q, k, w) {                 // Prognose in 3 Wochen gegenüber dem Stand, gemessen am typischen Fehler
+  const p = Q.prog[k][w], inz = Q.inz[k][w], vor = w > 0 ? Q.inz[k][w - 1] : null, m = Q.mae[2];
+  if (!p || p[2] == null || inz == null || vor == null || ((Q.L.h[k][w] || 0) & 8)) return 0;   // ungewohnte Lage: kein Pfeil
+  const d = p[2] - Math.log1p(inz);
+  // Pfeil nur, wenn die gemeldeten Zahlen die Richtung schon bestätigen (letzte Woche gegenüber der Vorwoche).
+  // Ohne diese Bestätigung kippte der Pfeil in Wellen zu früh nach unten (19.11.2026).
+  return d > m && inz > vor ? 1 : d < -m && inz < vor ? -1 : 0;
+}
+// Stufe mit Zeichen: ▲ leicht, ▲▲ deutlich über der Erwartung (sichtbar, auch wenn „leicht“ die Farbe nicht ändert)
+const stufeText = s => s == null ? "" : (s ? `<span class="marke m${s}" title="${STUFEN[s]}">${s === 2 ? "▲▲" : "▲"}</span>` : "") + STUFEN[s];
+const hinweise = h => HINWEISE.filter(([b]) => h & b).map(([b, kurz, lang]) => `<span class="chip${b === 8 ? " warn" : ""}" title="${lang}">${b === 8 ? "⚠ " : ""}${kurz}</span>`).join("");
+
+function gebietWaehlen(g) {
+  zustand.g = g;
+  if (g >= 0) {
+    zustand.d = "l";
+    if (D.kreise[zustand.k].land !== g) {                   // größter Kreis des Landes als Startkreis
+      const im = D.kreise.map((k, i) => ({ k, i })).filter(x => x.k.land === g).sort((a, b) => b.k.ew - a.k.ew);
+      zustand.k = im[0].i;
+    }
+  } else zustand.d = "k";
+  zeichnen();
+}
+
+function aufbauen() {
+  $("stand").textContent = `Datenstand: Meldewoche ab ${datum(D.stand)}, ${D.kreise.length} Kreise`;
+  const opt = [];
+  for (let i = D.wochen.length - 1; i >= D.ab; i--) { const [w, y] = kw(D.wochen[i]); opt.push(`<option value="${i}">KW ${w}/${y} (ab ${datum(D.wochen[i])})</option>`); }
+  $("woche").innerHTML = opt.join("");
+  $("gebiet").innerHTML = `<option value="-1">Deutschland</option>` + D.land.einheiten.map((l, i) => `<option value="${i}">${l.name}</option>`).join("");
+  $("gebiet").onchange = () => gebietWaehlen(+$("gebiet").value);
+  $("woche").onchange = () => { zustand.w = +$("woche").value; zeichnen(); };
+  $("aktuell").onclick = () => { zustand.w = D.wochen.length - 1; zeichnen(); };
+  $("csv").onclick = csvSpeichern;
+  $("drucken").onclick = () => { druckVorbereiten(); window.print(); };
+  window.addEventListener("beforeprint", druckVorbereiten);
+  window.addEventListener("afterprint", druckZuruecksetzen);
+  $("thema").onclick = () => { const i = THEMEN.findIndex(x => x[0] === thema); themaSetzen(THEMEN[(i + 1) % 3][0]); zeichnen(); };
+  matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => { if (thema === "system") { farbenLesen(); zeichnen(); } });
+  $("suche").oninput = ev => { suche = ev.target.value.toLowerCase(); zeichnen(); };
+  const K = D.karte;
+  $("karte").setAttribute("viewBox", `0 0 ${K.breite} ${K.hoehe}`);
+  $("karte").innerHTML = `<defs><pattern id="schraffur" width="4" height="4" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">` +
+    `<rect width="4" height="4" style="fill:var(--flaeche)"/><line x1="0" y1="0" x2="0" y2="4" style="stroke:var(--schraffur)" stroke-width="1.2"/></pattern></defs>` +
+    `<g id="kreise">${K.kreise.map(k => `<path class="kreis" data-k="${k.i}" d="${k.d}"/>`).join("")}</g>` +
+    `<g id="landlinien">${K.laender.map(d => `<path class="land" d="${d}"/>`).join("")}</g><g id="pfeile"></g><g id="auswahl"></g>`;
+  const tip = $("tip");
+  const zeigen = (ev, html) => { tip.innerHTML = html; tip.style.display = "block"; tip.style.left = ev.clientX + 12 + "px"; tip.style.top = ev.clientY + 12 + "px"; };
+  $("karte").addEventListener("mousemove", ev => {
+    const k = ev.target.dataset.k; if (k == null) { tip.style.display = "none"; return; }
+    const L = D.lage[zustand.e], w = zustand.w, o = L.o[k][w];
+    zeigen(ev, `<b>${D.kreise[k].name}</b>, ${o == null ? "keine Daten" : EINORDNUNG[o] + ", Last " + LAST[L.l[k][w]] + ", " + STUFEN[L.s[k][w]]}`);
+  });
+  $("karte").addEventListener("mouseleave", () => tip.style.display = "none");
+  $("karte").onclick = ev => { if (ev.target.dataset.k != null) { zustand.k = +ev.target.dataset.k; zustand.d = "k"; zeichnen(); } };
+  $("zeitstrahl").addEventListener("mousemove", ev => {
+    const w = ev.target.dataset.w; if (w == null) { tip.style.display = "none"; return; }
+    const [n, y] = kw(D.wochen[w]), a = anteile(+w);
+    zeigen(ev, `KW ${n}/${y}: beobachten ${zahl(a[0], 0)} %, prüfen ${zahl(a[1], 0)} %, prüfen und informieren ${zahl(a[2], 0)} %`);
+  });
+  $("zeitstrahl").addEventListener("mouseleave", () => tip.style.display = "none");
+  $("zeitstrahl").onclick = ev => { if (ev.target.dataset.w != null) { zustand.w = +ev.target.dataset.w; zeichnen(); } };
+  $("tabelle").onclick = ev => { const tr = ev.target.closest("tr[data-k]"); if (tr) { zustand.k = +tr.dataset.k; zustand.d = "k"; zeichnen(); } };
+  $("laender").onclick = ev => { const tr = ev.target.closest("tr[data-l]"); if (tr) gebietWaehlen(+tr.dataset.l); };
+  $("detail").onclick = ev => { const a = ev.target.closest("[data-l]"); if (a) gebietWaehlen(+a.dataset.l); };
+}
+
+function anteile(w) {                        // Anteil der Kreise im gewählten Gebiet je Empfehlung
+  const s = D.lage[zustand.e].o.map((r, i) => imGebiet(i) ? r[w] : null).filter(x => x != null);
+  return [1, 2, 3].map(o => s.length ? s.filter(x => x === o).length / s.length * 100 : 0);
+}
+
+function zeitstrahl() {
+  const B = 1240, H = 120, li = 34, re = 6, ob = 8, un = 22, n = D.wochen.length - D.ab, bw = (B - li - re) / n;
+  const y = p => ob + (1 - p / 100) * (H - ob - un);                 // Skala bis 100 %
+  let svg = "";
+  for (const p of [0, 50, 100]) svg += `<line x1="${li}" x2="${B - re}" y1="${y(p)}" y2="${y(p)}" stroke="${C.raster}"/><text x="${li - 5}" y="${y(p) + 4}" font-size="10" text-anchor="end" fill="${C.t2}">${p} %</text>`;
+  for (let i = D.ab; i < D.wochen.length; i++) {
+    const x = li + (i - D.ab) * bw, [a1, a2, a3] = anteile(i);
+    if (i === zustand.w) svg += `<rect x="${x - 1}" y="${ob - 4}" width="${bw + 2}" height="${H - ob - un + 6}" fill="${C.text}" opacity=".12"/>`;
+    [[a1 + a2 + a3, 1], [a2 + a3, 2], [a3, 3]].forEach(([a, o]) => { if (a > 0) svg += `<rect x="${x}" y="${y(a)}" width="${Math.max(bw - 0.6, 1)}" height="${y(0) - y(a)}" fill="${FARBE[o]}"/>`; });
+    svg += `<rect class="woche" data-w="${i}" x="${x}" y="${ob}" width="${bw}" height="${H - ob - un}" fill="transparent"/>`;
+    const d = new Date(D.wochen[i] + "T00:00:00Z");
+    if (d.getUTCDate() <= 7 && d.getUTCMonth() % 3 === 0) svg += `<text x="${x}" y="${H - 6}" font-size="10" fill="${C.t2}">${MONATE[d.getUTCMonth()]} ${String(d.getUTCFullYear()).slice(2)}</text>`;
+  }
+  $("zeitstrahl").innerHTML = svg;
+  const gebiet = zustand.g < 0 ? "" : ` in ${D.land.einheiten[zustand.g].name}`;
+  $("zeittitel").textContent = `Zeitstrahl: ${D.erreger[zustand.e]}${gebiet}`;
+  $("zeithinweis").textContent = `Anteil der Kreise je Empfehlung im Zeitverlauf.`;
+}
+
+function usp() {
+  const U = D.usp[zustand.e], B = 560, H = 230, li = 36, re = 8, ob = 20, un = 26, bw = (B - li - re) / 12;
+  const ymax = Math.max(5, ...[...U.fest, ...U.lagebild].filter(v => v != null)) * 1.1, y = v => ob + (1 - v / ymax) * (H - ob - un);
+  const schritt = ymax > 15 ? 5 : 2;
+  let svg = "";
+  for (let p = 0; p <= ymax; p += schritt) svg += `<line x1="${li}" x2="${B - re}" y1="${y(p)}" y2="${y(p)}" stroke="${C.raster}"/><text x="${li - 5}" y="${y(p) + 4}" font-size="10" text-anchor="end" fill="${C.t2}">${p} %</text>`;
+  U.fest.forEach((v, m) => {
+    const x = li + m * bw;
+    if (v != null) svg += `<rect x="${x + bw * .12}" y="${y(v)}" width="${bw * .36}" height="${y(0) - y(v)}" fill="#808080"/>`;
+    const l = U.lagebild[m]; if (l != null) svg += `<rect x="${x + bw * .52}" y="${y(l)}" width="${bw * .36}" height="${y(0) - y(l)}" fill="#C00009"/>`;
+    svg += `<text x="${x + bw / 2}" y="${H - 8}" font-size="10" text-anchor="middle" fill="${C.t2}">${MONATE[m]}</text>`;
+  });
+  svg += `<line x1="${li}" x2="${B - re}" y1="${y(2)}" y2="${y(2)}" stroke="${C.text}" stroke-dasharray="4 4"/>`;
+  svg += `<g font-size="11" fill="${C.text}"><rect x="${li}" y="2" width="10" height="10" fill="#808080"/><text x="${li + 14}" y="11">feste Ampel</text><rect x="${li + 100}" y="2" width="10" height="10" fill="#C00009"/><text x="${li + 114}" y="11">deutlich über der Erwartung</text></g>`;
+  $("uspgrafik").innerHTML = svg;
+  const f = U.fest.filter(v => v != null), l = U.lagebild.filter(v => v != null);
+  $("usptext").textContent = `Warum der Vergleich? Bekannte Ampeln, etwa aus der Corona-Zeit, arbeiten mit festen Grenzwerten. Eingestellt auf gleich viele Alarme übers Jahr, schlägt die feste Ampel je nach Monat bei ${zahl(Math.min(...f))} bis ${zahl(Math.max(...f))} % der Kreise an und zeigt damit vor allem die Jahreszeit. Der Vergleich mit der Erwartung liegt in jedem Monat bei ${zahl(Math.min(...l))} bis ${zahl(Math.max(...l))} % und zeigt, was ungewöhnlich ist (Saisons ab 2023).`;
+}
+
+function karte() {
+  const { e, w, k, g, d } = zustand, L = D.lage[e], QK = quelle("k");
+  document.querySelectorAll("#kreise .kreis").forEach(p => {
+    const i = +p.dataset.k, o = L.o[i][w];
+    p.setAttribute("fill", o == null ? KEINE : FARBE[o]);
+    p.classList.toggle("fremd", !imGebiet(i));
+  });
+  let pfeile = "";                                             // Pfeile nur bei Kreisen mit Empfehlung über „keine Maßnahme“
+  document.querySelectorAll("#kreise .kreis").forEach(p => {
+    const i = +p.dataset.k, r = L.o[i][w] && imGebiet(i) ? richtung(QK, i, w) : 0;
+    if (!r) return;
+    const bb = p.getBBox();
+    pfeile += `<text x="${bb.x + bb.width / 2}" y="${bb.y + bb.height / 2 + 3}" font-size="9" font-weight="700" text-anchor="middle" fill="${L.o[i][w] === 3 ? "#fff" : "#1d1d1f"}" pointer-events="none">${PFEIL[r]}</text>`;
+  });
+  $("pfeile").innerHTML = pfeile;
+
+  // Ausschnitt: ganz Deutschland oder das gewählte Land
+  const K = D.karte;
+  let box = [0, 0, K.breite, K.hoehe];
+  if (g >= 0) {
+    const bbs = [...document.querySelectorAll("#kreise .kreis")].filter(p => imGebiet(+p.dataset.k)).map(p => p.getBBox());
+    const x0 = Math.min(...bbs.map(b => b.x)), y0 = Math.min(...bbs.map(b => b.y));
+    const x1 = Math.max(...bbs.map(b => b.x + b.width)), y1 = Math.max(...bbs.map(b => b.y + b.height));
+    const rand = Math.max(x1 - x0, y1 - y0) * .08;
+    box = [x0 - rand, y0 - rand, x1 - x0 + 2 * rand, y1 - y0 + 2 * rand];
+  }
+  $("karte").setAttribute("viewBox", box.map(v => v.toFixed(1)).join(" "));
+  const mass = box[2] / K.breite;                              // Schrift und Linien beim Hineinzoomen nicht mitwachsen lassen
+  $("pfeile").querySelectorAll("text").forEach(t => t.setAttribute("font-size", 9 * Math.max(mass, .45)));
+  document.querySelectorAll("#landlinien .land").forEach(p => p.style.strokeWidth = .6 * Math.max(mass, .4));
+
+  const pfad = document.querySelector(`#kreise .kreis[data-k="${k}"]`);
+  $("auswahl").innerHTML = "";
+  if (pfad && d === "k") {
+    const kopie = pfad.cloneNode(); kopie.classList.add("gewaehlt"); kopie.classList.remove("fremd"); kopie.style.pointerEvents = "none";
+    kopie.style.strokeWidth = 2.2 * Math.max(mass, .4);
+    $("auswahl").appendChild(kopie);
+    const bb = pfad.getBBox(), fs = 11 * Math.max(mass, .45);
+    $("auswahl").insertAdjacentHTML("beforeend", `<text x="${bb.x + bb.width / 2}" y="${bb.y - fs * .4}" font-size="${fs}" font-weight="700" text-anchor="middle" fill="${C.text}" stroke="${C.flaeche}" stroke-width="${fs * .27}" paint-order="stroke">${D.kreise[k].kurz}</text>`);
+  }
+}
+
+function detail() {
+  const { w, d } = zustand, Q = quelle(d), k = d === "l" ? zustand.g : zustand.k, L = Q.L, ein = Q.E[k];
+  const s = L.s[k][w], o = L.o[k][w], l = L.l[k][w], ri = richtung(Q, k, w), G = Q.G;
+  // Spalten der Matrix: wie erwartet, leicht, deutlich darüber. „Leicht“ führt zur selben Empfehlung wie „wie erwartet“.
+  const zelle = (zl, sp) => { const dt = sp === 2, e = zl === 2 && dt ? 3 : zl === 2 || (zl === 1 && dt) ? 2 : (zl === 1 || dt) ? 1 : 0;
+    return `<td class="m${e}${zl === l && sp === s ? " aktiv" : ""}">${EINORDNUNG[e]}</td>`; };
+  let zusatz = "";
+  if (d === "k") {                                             // Kreis: Land mit seiner eigenen Empfehlung
+    const lg = ein.land, lo = D.land.lage[zustand.e].o[lg][w];
+    zusatz = `<dt>Land</dt><dd><span class="link" data-l="${lg}">${D.land.einheiten[lg].name}</span> ${badge(lo)}</dd>`;
+  } else {                                                      // Land: Empfehlungen seiner Kreise
+    const o_k = D.kreise.map((kr, i) => kr.land === k ? D.lage[zustand.e].o[i][w] : undefined).filter(x => x !== undefined);
+    zusatz = `<dt>Kreise im Land</dt><dd>${[3, 2, 1, 0].map(x => [x, o_k.filter(y => y === x).length]).filter(([, n]) => n).map(([x, n]) => `${n} ${EINORDNUNG[x]}`).join(", ") || "keine"}</dd>`;
+  }
+  const erwartung = d === "l" ? "was für dieses Land in dieser Jahreszeit bei der Lage im übrigen Bundesgebiet normal wäre"
+                              : "was für diesen Kreis in dieser Jahreszeit bei der bundesweiten Lage normal wäre";
+  const h = L.h[k][w] || 0, ug = h & 8;
+  $("detail").innerHTML = `<h2>${d === "l" ? "Land " : ""}${ein.name} ${badge(o)} ${ri ? `<span title="Prognose für 3 Wochen">${PFEIL[ri]}</span>` : ""}</h2>
+    ${ug ? `<div class="warnung"><span class="zeichen">⚠</span><div><b>Ungewohnte Lage: keine verlässliche Prognose</b><br>Ungewöhnlich hoch für diese Jahreszeit.</div></div>` : ""}
+    <dl><dt>Last</dt><dd>${l == null ? "keine Daten" : `<b>${LAST[l]}</b>: ${zahl(L.g[k][w])} je 100.000 <span class="hinweis" title="Grenzen nach MEM: mittel ab ${zahl(G.mittel)}, hoch ab ${zahl(G.hoch)}">ⓘ</span>`}</dd>
+    <dt>Erwartung</dt><dd>${s == null ? "keine Daten" : `<b>${stufeText(s)}</b>, ${faktor(L.f[k][w])} (erwartet ${zahl(L.e[k][w])})`}</dd>
+    <dt>Abwasser</dt><dd>${ABW[L.a[k][w] ?? 0]}</dd>
+    <dt>Richtung</dt><dd>${ri === 1 ? "↗ steigt deutlich" : ri === -1 ? "↘ fällt deutlich" : "keine deutliche Änderung"}</dd>
+    ${zusatz}
+    ${h & ~8 ? `<dt>Hinweise</dt><dd>${hinweise(h & ~8)}</dd>` : ""}</dl>
+    <table class="matrix"><caption class="hinweis" style="text-align:left;caption-side:top;padding-bottom:3px">Empfehlung aus Last und Erwartung</caption>
+      <tr><th></th><th>wie erwartet</th><th>leicht über<br>der Erwartung</th><th>deutlich über<br>der Erwartung</th></tr>
+      ${[2, 1, 0].map(zl => `<tr><th style="text-align:right">Last ${LAST[zl]}</th>${zelle(zl, 0)}${zelle(zl, 1)}${zelle(zl, 2)}</tr>`).join("")}</table>
+    <svg id="verlauf" viewBox="0 0 640 270"></svg>
+    <div class="hinweis" id="prognosehinweis"></div>
+    <svg id="abweichung" viewBox="0 0 640 200" style="margin-top:10px"></svg>
+    <details class="mehr"><summary>Erklärung und weitere Informationen</summary>
+      <p><b>Farbe:</b> empfohlene Maßnahme aus Last und Erwartung.</p>
+      <p><b>Last:</b> gemeldete Fälle je 100.000 und Woche, Mittel der letzten drei Wochen. Mittel ab ${zahl(G.mittel)}, hoch ab ${zahl(G.hoch)} (Moving Epidemic Method, Saisons ab 2023).</p>
+      <p><b>Erwartung:</b> ${erwartung} (XGBoost). Leicht darüber ab dem 90-%-Wert des Kalendermonats, deutlich ab dem 98-%-Wert; mit erhöhtem Abwasser ab dem 95-%-Wert (gepunktete Linie). „Leicht“ ändert die Empfehlung nicht, es zeigt nur früh, wohin es geht.</p>
+      <p><b>Prognose:</b> XGBoost mit dem Wissen vom Stichtag, je Woche gemischt mit „bleibt wie zuletzt“. Typischer Fehler ${zahl(Math.expm1(Q.mae[0]) * 100, 0)} % nach 1 Woche, ${zahl(Math.expm1(Q.mae[6]) * 100, 0)} % nach 7 Wochen. Graue Fläche: In 8 von 10 Fällen lag der Wert im Test darin.</p>
+      <p><b>Ungewohnte Lage:</b> Der Stand ist höher als in 99 % der Wochen früherer Saisons in derselben Jahreszeit. Das Modell kennt so etwas nicht; im Test war die Prognose dort viermal so ungenau. Deshalb keine Prognose, sondern der Bereich, in dem der Wert in ähnlichen Lagen früherer Saisons (ähnlich hoher Stand) nach 1 bis 7 Wochen lag.</p>
+    </details>`;
+  verlauf(Q, k);
+  abweichung(Q, k);
+}
+
+function kreisZeilen() {                      // Kreise im Gebiet mit Suchfilter, sortiert wie die Tabelle
+  const { e, w } = zustand, L = D.lage[e];
+  return D.kreise.map((kr, i) => ({ i, kr, o: L.o[i][w], s: L.s[i][w], z: L.f[i][w] }))
+    .filter(x => imGebiet(x.i) && (!suche || x.kr.name.toLowerCase().includes(suche)))
+    .sort((a, b) => (b.o ?? -1) - (a.o ?? -1) || (b.z ?? -99) - (a.z ?? -99));
+}
+
+function csvText() {                          // Kreistabelle wie angezeigt; Semikolon und Dezimalkomma für deutsches Excel
+  const { e, w } = zustand, L = D.lage[e], QK = quelle("k");
+  const zahlCsv = (v, n) => v == null ? "" : v.toLocaleString("de-DE", { minimumFractionDigits: n, maximumFractionDigits: n, useGrouping: false });
+  const feld = v => /[;"\n]/.test(v) ? `"${v.replace(/"/g, '""')}"` : v;
+  const kopf = ["Stichtag", "Kreis", "Land", "Empfohlene Maßnahme", "Last", "Gemeldet je 100.000", "Erwartet je 100.000", "gemeldet / erwartet",
+                "gegenüber Erwartung", "Abwasser", "Richtung", "Hinweise"];
+  const zeilen = kreisZeilen().map(({ i, kr, o, s, z }) => {
+    const r = richtung(QK, i, w), h = L.h[i][w] || 0;
+    return [datum(D.wochen[w]), kr.name, D.land.einheiten[kr.land].name, o == null ? "keine Daten" : EINORDNUNG[o],
+            L.l[i][w] == null ? "" : LAST[L.l[i][w]], zahlCsv(L.g[i][w], 1), zahlCsv(L.e[i][w], 1), zahlCsv(z, 2),
+            s == null ? "" : STUFEN[s], ABW[L.a[i][w] ?? 0], r === 1 ? "steigt deutlich" : r === -1 ? "fällt deutlich" : "",
+            HINWEISE.filter(([b]) => h & b).map(([, kurz]) => kurz).join(", ")].map(v => feld(String(v)));
+  });
+  return "﻿" + [kopf, ...zeilen].map(z => z.join(";")).join("\r\n");
+}
+
+function csvSpeichern(ev) {
+  ev.preventDefault();
+  const [n, j] = kw(D.wochen[zustand.w]), gebiet = zustand.g < 0 ? "Deutschland" : D.land.einheiten[zustand.g].name;
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([csvText()], { type: "text/csv;charset=utf-8" }));
+  a.download = `Lagebild_KW${String(n).padStart(2, "0")}-${j}_${gebiet.replace(/\s+/g, "-")}.csv`;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+}
+
+// Druck: immer hell, „Methode und Daten“ aufgeklappt, Stichtag und Gebiet im Kopf; danach wie vorher
+let vorDruck = null;
+function druckVorbereiten() {
+  if (vorDruck) return;
+  const fuss = document.querySelector("footer details");
+  vorDruck = { thema, offen: fuss.open };
+  if (thema !== "light") { document.documentElement.setAttribute("data-theme", "light"); farbenLesen(); zeichnen(); }
+  fuss.open = true;
+  const [n, j] = kw(D.wochen[zustand.w]), gebiet = zustand.g < 0 ? "Deutschland" : D.land.einheiten[zustand.g].name;
+  $("druckinfo").textContent = `Stichtag: KW ${n}/${j} (Woche ab ${datum(D.wochen[zustand.w])}), Gebiet: ${gebiet}. Kreistabelle: Kreise ab „prüfen“.`;
+}
+function druckZuruecksetzen() {
+  if (!vorDruck) return;
+  document.querySelector("footer details").open = vorDruck.offen;
+  const t = vorDruck.thema; vorDruck = null;
+  themaSetzen(t); zeichnen();
+}
+
+function zeichnen() {
+  const { e, w, k, g } = zustand, L = D.lage[e], QK = quelle("k"), LL = D.land.lage[e];
+  $("woche").value = w;
+  $("gebiet").value = g;
+  const [kwn, kwj] = kw(D.wochen[w]), gname = g < 0 ? "Deutschland" : D.land.einheiten[g].name;
+  $("kartentitel").textContent = `Kartenansicht: ${gname}, KW ${kwn}/${kwj} (Woche ab ${datum(D.wochen[w])})`;
+  zeitstrahl();
+  usp();
+
+  // Kacheln: Kreise im gewählten Gebiet
+  const im = D.kreise.map((_, i) => i).filter(imGebiet);
+  const stufen = im.map(i => L.o[i][w]), bewertet = stufen.filter(x => x != null).length;
+  const n = s => stufen.filter(x => x === s).length;
+  const abwV = im.map(i => L.a[i][w]).filter(a => a > 0);
+  const flaeche = g < 0
+    ? `<div class="kachel"><div class="titel">Deutschland</div><div class="wert">${zahl(D.bund[e][w])} <span class="klein">je 100.000</span></div><div class="klein">gemeldet in dieser Woche, Vorwoche ${zahl(D.bund[e][w - 1])}</div></div>`
+    : `<div class="kachel"><div class="titel">${gname}</div><div class="wert">${zahl(D.land.inz[e][g][w])} <span class="klein">je 100.000</span></div><div class="klein">Land: ${badge(LL.o[g][w])}, Vorwoche ${zahl(D.land.inz[e][g][w - 1])}</div></div>`;
+  $("kacheln").innerHTML = `
+    <div class="kachel"><div class="titel">Prüfen (und informieren)</div><div class="wert">${n(2) + n(3)} <span class="klein">von ${bewertet} Kreisen</span></div><div class="klein">davon ${n(3)} rot</div></div>
+    <div class="kachel"><div class="titel">Beobachten</div><div class="wert">${n(1)} <span class="klein">Kreise</span></div><div class="klein">gelb markiert</div></div>
+    ${flaeche}
+    <div class="kachel"><div class="titel">Abwasser Influenza</div><div class="wert">${abwV.length ? abwV.filter(a => a === 2).length + ' <span class="klein">von ' + abwV.length + " erhöht</span>" : "keine"}</div><div class="klein">${abwV.length ? "Kreise mit Messstelle" : "in dieser Woche keine Messwerte"}</div></div>`;
+
+  karte();
+  detail();
+
+  // Länder
+  const QL = quelle("l");
+  $("laender").innerHTML = `<thead><tr><th>Land</th><th>Empfohlene Maßnahme</th><th>Last</th><th class="zahl">Gemeldet</th><th class="zahl">Erwartet</th><th>gegenüber Erwartung</th><th>Abwasser</th><th>Richtung</th><th class="zahl">Kreise orange/rot</th></tr></thead><tbody>` +
+    D.land.einheiten.map((ld, i) => { const kr = D.kreise.map((x, j) => x.land === i ? L.o[j][w] : null).filter(x => x >= 2).length;
+      return `<tr data-l="${i}" class="${i === g ? "gewaehlt" : ""}"><td>${ld.name}</td><td>${badge(LL.o[i][w])}</td><td>${LL.l[i][w] == null ? "" : LAST[LL.l[i][w]]}</td>
+      <td class="zahl">${zahl(LL.g[i][w])}</td><td class="zahl">${zahl(LL.e[i][w])}</td><td>${stufeText(LL.s[i][w])}</td>
+      <td>${ABW[LL.a[i][w] ?? 0]}</td><td>${PFEIL[richtung(QL, i, w)] || ""}</td><td class="zahl">${kr}</td></tr>`; }).join("") + "</tbody>";
+
+  // Kreise im Gebiet
+  $("kreistitel").textContent = g < 0 ? "Alle Kreise" : `Kreise in ${gname}`;
+  const alle = L.h.reduce((u, reihe) => u | ((reihe[w] || 0) & ~KREISBEZOGEN), 0);
+  $("allgemein").innerHTML = alle ? `Gilt für alle Kreise: ${hinweise(alle)}` : "";
+  const zeilen = kreisZeilen();
+  $("tabelle").innerHTML = `<thead><tr><th>Kreis</th><th>Empfohlene Maßnahme</th><th>Last</th><th class="zahl">Gemeldet</th><th class="zahl">Erwartet</th><th class="zahl">gemeldet / erwartet</th><th>gegenüber Erwartung</th><th>Abwasser</th><th>Richtung</th><th>Hinweis</th></tr></thead><tbody>` +
+    zeilen.map(({ i, kr, o, s, z }) => `<tr data-k="${i}" class="${i === k && zustand.d === "k" ? "gewaehlt" : ""}${o >= 2 ? "" : " druck-aus"}"><td>${kr.name}</td><td>${badge(o)}</td><td>${L.l[i][w] == null ? "" : LAST[L.l[i][w]]}</td>
+      <td class="zahl">${zahl(L.g[i][w])}</td><td class="zahl">${zahl(L.e[i][w])}</td><td class="zahl">${faktor(z)}</td><td>${stufeText(s)}</td>
+      <td>${ABW[L.a[i][w] ?? 0]}</td><td>${PFEIL[richtung(QK, i, w)] || ""}</td><td>${hinweise((L.h[i][w] || 0) & KREISBEZOGEN)}</td></tr>`).join("") + "</tbody>";
+}
+
+function verlauf(Q, k) {
+  const { e, w } = zustand, inz = Q.inz[k], L = Q.L, prog = Q.prog[k][w], mae = Q.mae, bd = Q.band, ug = (L.h[k][w] || 0) & 8;
+  const von = Math.max(0, w - 26), bis = w + 7, B = 640, H = 270, li = 46, re = 12, ob = 14, un = 46;
+  const x = i => li + (i - von) / (bis - von) * (B - li - re);
+  const beob = []; for (let i = von; i <= Math.min(bis, D.wochen.length - 1); i++) if (inz[i] != null) beob.push([i, inz[i]]);
+  // Ungewohnte Lage: keine Prognoselinie, sondern der Bereich um den Stand, wie es in ähnlichen Lagen weiterging (Notebook 16, 4c)
+  const stand = inz[w], st = stand == null ? 0 : Q.U.grenzen.filter(g => stand >= g).length;
+  const band = ug && stand != null ? Q.U.unten[st].map((u, h) => [w + h + 1, Math.expm1(Math.log1p(stand) + u), null, Math.expm1(Math.log1p(stand) + Q.U.oben[st][h])])
+    : prog ? prog.map((p, h) => p == null ? null : [w + h + 1, Math.expm1(p + bd.unten[h]), Math.expm1(p), Math.expm1(p + bd.oben[h])]).filter(Boolean) : [];
+  const ymax = Math.max(1, ...beob.map(b => b[1]), ...band.map(b => b[2] ?? 0)) * 1.35;   // Achse nach gemeldet und Prognose, der Bereich wird abgeschnitten
+  const bandmax = Math.max(0, ...band.map(b => b[3]));
+  const y = v => ob + (1 - Math.max(v, 0) / ymax) * (H - ob - un);
+  const schritt = [1, 2, 5, 10, 20, 50, 100, 200, 500, 1000].find(s => ymax / s <= 5) || 2000;
+  let svg = "";
+  for (let v = 0; v <= ymax; v += schritt) svg += `<line x1="${li}" x2="${B - re}" y1="${y(v)}" y2="${y(v)}" stroke="${C.raster}"/><text x="${li - 6}" y="${y(v) + 4}" font-size="11" text-anchor="end" fill="${C.t2}">${zahl(v, 0)}</text>`;
+  if (band.length) {
+    const ob_ = band.map(b => `${x(b[0])},${y(b[3])}`), un_ = band.map(b => `${x(b[0])},${y(b[1])}`).reverse();
+    svg += `<clipPath id="flaeche"><rect x="${li}" y="${ob}" width="${B - li - re}" height="${H - ob - un}"/></clipPath>`;
+    svg += `<polygon clip-path="url(#flaeche)" points="${[`${x(w)},${y(inz[w] ?? 0)}`, ...ob_.map(t => t.split(",")[0] + "," + Math.max(ob, +t.split(",")[1])), ...un_].join(" ")}" fill="${ug ? "#E8862E" : "#808080"}" opacity="${ug ? ".22" : ".18"}"/>`;
+    if (bandmax > ymax) svg += `<text x="${B - re}" y="${ob + 24}" font-size="11" text-anchor="end" fill="${ug ? C.warn : C.t2}">↑ Bereich reicht bis ${zahl(bandmax, 0)}</text>`;
+    if (!ug) svg += `<polyline points="${[`${x(w)},${y(inz[w] ?? 0)}`, ...band.map(b => `${x(b[0])},${y(b[2])}`)].join(" ")}" fill="none" stroke="${C.t2}" stroke-width="2" stroke-dasharray="5 4"/>`;
+  }
+  svg += `<polyline points="${beob.map(b => `${x(b[0])},${y(b[1])}`).join(" ")}" fill="none" stroke="${C.text}" stroke-width="2.2"/>`;
+  svg += `<line x1="${x(w)}" x2="${x(w)}" y1="${ob}" y2="${H - un}" stroke="${C.text}" stroke-dasharray="2 3"/><text x="${x(w) - 4}" y="${H - un - 6}" font-size="11" text-anchor="end" fill="${C.text}">Stichtag</text>`;
+  for (let i = von; i <= w; i++) { const o = L.o[k][i]; svg += `<rect x="${x(i) - 4}" y="${H - un + 8}" width="8" height="8" rx="2" fill="${o == null ? KEINE : FARBE[o]}" stroke="${C.raster2}" stroke-width=".5"/>`; }
+  svg += `<text x="${li}" y="${H - un + 30}" font-size="11" fill="${C.t2}">Empfohlene Maßnahme je Woche</text>`;
+  for (let i = von; i <= bis; i += 4) { const d = new Date(D.wochen[0] + "T00:00:00Z"); d.setUTCDate(d.getUTCDate() + 7 * i);
+    svg += `<text x="${x(i)}" y="${H - 4}" font-size="11" text-anchor="middle" fill="${C.t2}">${String(d.getUTCDate()).padStart(2, "0")}.${String(d.getUTCMonth() + 1).padStart(2, "0")}.${String(d.getUTCFullYear()).slice(2)}</text>`; }
+  svg += `<text x="${li}" y="${ob - 2}" font-size="11" fill="${C.t2}">Inzidenz je 100.000 und Woche</text>`;
+  svg += `<g font-size="11" fill="${C.text}"><line x1="${B - 250}" x2="${B - 228}" y1="${ob + 4}" y2="${ob + 4}" stroke="${C.text}" stroke-width="2.2"/><text x="${B - 224}" y="${ob + 8}">gemeldet</text>` +
+    (band.length && !ug ? `<line x1="${B - 160}" x2="${B - 138}" y1="${ob + 4}" y2="${ob + 4}" stroke="${C.t2}" stroke-width="2" stroke-dasharray="5 4"/><text x="${B - 134}" y="${ob + 8}">Prognose</text>` : "") +
+    (ug && band.length ? `<rect x="${B - 160}" y="${ob - 2}" width="12" height="10" fill="#E8862E" opacity=".35"/><text x="${B - 144}" y="${ob + 8}">ähnliche Lagen</text>` : "") + `</g>`;
+  $("verlauf").innerHTML = svg;
+  if (ug) { $("prognosehinweis").innerHTML = `<b style="color:${C.warn}">Keine Prognose.</b> Orange: so ging es in ähnlichen Lagen weiter (7 von 10 Fällen).`; return; }
+  if (!prog) { $("prognosehinweis").textContent = "Für diesen Stichtag gibt es keine Prognose."; return; }
+  const besser = mae.map((m, h) => m < Q.mp[h] ? h + 1 : null).filter(Boolean);
+  $("prognosehinweis").innerHTML = `Grau: 8 von 10 Fällen im Test.` +
+    (besser.length ? "" : ` <b>Im Test nie besser als „bleibt wie zuletzt“.</b>`);
+}
+
+function abweichung(Q, k) {                  // gemeldet / erwartet mit den Grenzen der Stufen je Kalendermonat
+  const { w } = zustand, L = Q.L, F = Q.F;
+  const von = Math.max(0, w - 26), bis = w + 7, B = 640, H = 200, li = 46, re = 12, ob = 22, un = 24;   // gleiche x-Achse wie der Verlauf
+  const x = i => li + (i - von) / (bis - von) * (B - li - re);
+  const monat = i => new Date(D.wochen[i] + "T00:00:00Z").getUTCMonth();
+  const wochen = []; for (let i = von; i <= w; i++) wochen.push(i);
+  const werte = wochen.map(i => L.f[k][i]).filter(v => v != null);
+  const oben = Math.max(4, ...werte, ...wochen.map(i => F.deutlich[monat(i)])) * 1.15, unten = Math.min(.5, ...werte) / 1.15;
+  const y = v => ob + (Math.log(oben) - Math.log(Math.min(Math.max(v, unten), oben))) / (Math.log(oben) - Math.log(unten)) * (H - ob - un);
+  const stufe = (grenze) => wochen.flatMap(i => [[x(i) - 0.5 * (x(1) - x(0)), y(F[grenze][monat(i)])], [x(i) + 0.5 * (x(1) - x(0)), y(F[grenze][monat(i)])]]);
+  const linie = pts => pts.map(([a, b]) => `${a.toFixed(1)},${b.toFixed(1)}`).join(" ");
+  let svg = "";
+  for (const v of [.5, 1, 2, 4, 8, 16].filter(v => v > unten && v < oben))
+    svg += `<line x1="${li}" x2="${B - re}" y1="${y(v)}" y2="${y(v)}" stroke="${v === 1 ? C.raster2 : C.raster}"/><text x="${li - 6}" y="${y(v) + 4}" font-size="11" text-anchor="end" fill="${C.t2}">${zahl(v, v < 1 ? 1 : 0)}</text>`;
+  const leicht = stufe("leicht"), deutlich = stufe("deutlich");
+  svg += `<polygon points="${linie([...leicht, ...deutlich.slice().reverse()])}" fill="#F2C14E" opacity=".25"/>`;
+  svg += `<polygon points="${linie([...deutlich, [deutlich[deutlich.length - 1][0], ob], [deutlich[0][0], ob]])}" fill="#C00009" opacity=".1"/>`;
+  svg += `<polyline points="${linie(leicht)}" fill="none" stroke="${C.leicht}" stroke-width="1.2"/><polyline points="${linie(deutlich)}" fill="none" stroke="#C00009" stroke-width="1.2"/>`;
+  svg += `<polyline points="${linie(stufe("deutlich_abw"))}" fill="none" stroke="#C00009" stroke-width="1" stroke-dasharray="1.5 2.5"/>`;
+  const pkt = wochen.filter(i => L.f[k][i] != null);
+  svg += `<polyline points="${linie(pkt.map(i => [x(i), y(L.f[k][i])]))}" fill="none" stroke="${C.text}" stroke-width="1.8"/>`;
+  const PFARBE = [C.flaeche, "#F2C14E", "#C00009"];
+  pkt.forEach(i => { const s = L.s[k][i]; svg += `<circle cx="${x(i)}" cy="${y(L.f[k][i])}" r="3.2" fill="${PFARBE[s ?? 0]}" stroke="${C.text}" stroke-width="1"><title>${datum(D.wochen[i])}: ${faktor(L.f[k][i])}, ${STUFEN[s ?? 0]}</title></circle>`; });
+  svg += `<line x1="${x(w)}" x2="${x(w)}" y1="${ob}" y2="${H - un}" stroke="${C.text}" stroke-dasharray="2 3"/>`;
+  for (let i = von; i <= bis; i += 4) { const d = new Date(D.wochen[0] + "T00:00:00Z"); d.setUTCDate(d.getUTCDate() + 7 * i);
+    svg += `<text x="${x(i)}" y="${H - 6}" font-size="11" text-anchor="middle" fill="${C.t2}">${String(d.getUTCDate()).padStart(2, "0")}.${String(d.getUTCMonth() + 1).padStart(2, "0")}.${String(d.getUTCFullYear()).slice(2)}</text>`; }
+  svg += `<text x="${li}" y="${ob - 8}" font-size="11" fill="${C.t2}">Gemeldet / erwartet</text>`;
+  svg += `<g font-size="11" fill="${C.text}"><rect x="${B - 250}" y="${ob - 17}" width="10" height="10" fill="#F2C14E" opacity=".6"/><text x="${B - 236}" y="${ob - 8}">leicht darüber</text>` +
+         `<rect x="${B - 140}" y="${ob - 17}" width="10" height="10" fill="#C00009" opacity=".35"/><text x="${B - 126}" y="${ob - 8}">deutlich darüber</text></g>`;
+  $("abweichung").innerHTML = svg;
+}
+
+aufbauen();
+zeichnen();
+</script>
+</body>
+</html>

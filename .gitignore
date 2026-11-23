@@ -1,0 +1,12 @@
+.venv/
+__pycache__/
+.ipynb_checkpoints/
+.DS_Store
+# beim Aktualisieren neu erzeugt
+Technik/02_Daten/AMELAG/*.tsv
+Technik/02_Daten/AMELAG/*.neu
+Technik/02_Daten/aufbereitet/meldedaten_kreis_woche.csv
+Technik/02_Daten/aufbereitet/meldedaten_inzidenz.csv
+Technik/02_Daten/aufbereitet/lagebild_daten.csv
+Technik/02_Daten/aufbereitet/abwasser_kreis_woche.csv
+Technik/08_Lagebild/Notebook-Läufe/
