@@ -53,7 +53,16 @@
   svg { display: block; width: 100%; height: auto; }
   .zeitleiste { display: flex; }
   #zeitachse { width: 34px; height: 120px; flex: none; }
-  .zeitscroll { flex: 1; min-width: 0; overflow-x: auto; }
+  .zeitrahmen { position: relative; flex: 1; min-width: 0; }
+  .zeitscroll { overflow-x: auto; scrollbar-width: thin; padding-bottom: 8px; }
+  .zeitrahmen::before, .zeitrahmen::after { content: ""; position: absolute; top: 0; bottom: 0; width: 48px; pointer-events: none; opacity: 0; transition: opacity .2s; z-index: 1; }
+  .zeitrahmen::before { left: 0; background: linear-gradient(to right, var(--flaeche), transparent); }
+  .zeitrahmen::after { right: 0; background: linear-gradient(to left, var(--flaeche), transparent); }
+  .zeitrahmen.links-mehr::before, .zeitrahmen.rechts-mehr::after { opacity: 1; }
+  .zeitpfeil { position: absolute; top: 34px; z-index: 2; width: 28px; height: 28px; padding: 0; border-radius: 50%; border: 1px solid var(--linie); background: var(--flaeche); color: var(--text); font-size: 18px; line-height: 24px; cursor: pointer; display: none; box-shadow: 0 1px 4px rgba(0,0,0,.18); }
+  .zeitpfeil.links { left: 2px; } .zeitpfeil.rechts { right: 2px; }
+  .zeitrahmen.links-mehr .zeitpfeil.links, .zeitrahmen.rechts-mehr .zeitpfeil.rechts { display: block; }
+  @media (hover: none) { .zeitpfeil { display: none !important; } }
   .kreis { stroke: var(--flaeche); stroke-width: .25; cursor: pointer; }
   .kreis:hover { stroke: var(--text); stroke-width: 1; }
   .kreis.gewaehlt { stroke: var(--text); stroke-width: 2.2; }
@@ -95,7 +104,7 @@
   details.mehr summary { cursor: pointer; }
   details.mehr p { margin: 6px 0; }
   details.mehr ul { margin: 4px 0 6px; padding-left: 20px; }
-  #tip { position: fixed; pointer-events: none; background: var(--text); color: var(--flaeche); font-size: 12px; padding: 4px 8px; border-radius: 5px; display: none; }
+  #tip { position: fixed; z-index: 10; pointer-events: none; background: var(--text); color: var(--flaeche); font-size: 12px; padding: 4px 8px; border-radius: 5px; display: none; }
   footer { color: var(--text-2); font-size: 12px; max-width: 1280px; margin: 0 auto; padding: 0 20px 32px; }
   footer details.mehr { max-width: 900px; line-height: 1.6; }
   @page { size: A4 landscape; margin: 10mm; }
@@ -136,7 +145,7 @@
 <main>
   <div class="karte zeit kein-druck">
     <h2 id="zeittitel">Zeitstrahl</h2>
-    <div class="zeitleiste"><svg id="zeitachse" viewBox="0 0 34 120"></svg><div class="zeitscroll" id="zeitscroll"><svg id="zeitstrahl"></svg></div></div>
+    <div class="zeitleiste"><svg id="zeitachse" viewBox="0 0 34 120"></svg><div class="zeitrahmen" id="zeitrahmen"><button class="zeitpfeil links" id="zeitlinks" title="Frühere Wochen">‹</button><div class="zeitscroll" id="zeitscroll"><svg id="zeitstrahl"></svg></div><button class="zeitpfeil rechts" id="zeitrechts" title="Spätere Wochen">›</button></div></div>
     <div class="hinweis" id="zeithinweis"></div>
   </div>
   <div class="karten4" id="kacheln"></div>
@@ -287,8 +296,10 @@ function aufbauen() {
   $("drucken").onclick = () => { druckVorbereiten(); window.print(); };
   window.addEventListener("beforeprint", druckVorbereiten);
   window.addEventListener("afterprint", druckZuruecksetzen);
-  window.addEventListener("resize", zeitSichtbar);
-  window.addEventListener("load", zeitSichtbar);
+  new ResizeObserver(zeitSichtbar).observe($("zeitscroll"));   // nach jeder Layoutänderung gewählte Woche zeigen
+  $("zeitscroll").addEventListener("scroll", zeitRand, { passive: true });
+  $("zeitlinks").onclick = () => $("zeitscroll").scrollBy({ left: -$("zeitscroll").clientWidth * 0.6, behavior: "smooth" });
+  $("zeitrechts").onclick = () => $("zeitscroll").scrollBy({ left: $("zeitscroll").clientWidth * 0.6, behavior: "smooth" });
   $("thema").onclick = () => { const i = THEMEN.findIndex(x => x[0] === thema); themaSetzen(THEMEN[(i + 1) % 3][0]); zeichnen(); };
   matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => { if (thema === "system") { farbenLesen(); zeichnen(); } });
   $("suche").oninput = ev => { suche = ev.target.value.toLowerCase(); zeichnen(); };
@@ -328,6 +339,12 @@ const ZEIT_BW = 10;                          // Breite einer Woche im Zeitstrahl
 function zeitSichtbar() {                    // gewählte Woche in den sichtbaren Bereich holen
   const sc = $("zeitscroll"), xw = (zustand.w - D.ab) * ZEIT_BW;
   if (xw < sc.scrollLeft || xw + ZEIT_BW > sc.scrollLeft + sc.clientWidth) sc.scrollLeft = xw - sc.clientWidth * 0.8;
+  zeitRand();
+}
+function zeitRand() {                        // Verlauf und Pfeil nur auf der Seite, auf der es weitergeht
+  const sc = $("zeitscroll"), r = $("zeitrahmen");
+  r.classList.toggle("links-mehr", sc.scrollLeft > 2);
+  r.classList.toggle("rechts-mehr", sc.scrollLeft + sc.clientWidth < sc.scrollWidth - 2);
 }
 
 function zeitstrahl() {                     // feste Breite je Woche, waagrecht scrollbar; die Achse steht fest
@@ -353,7 +370,7 @@ function zeitstrahl() {                     // feste Breite je Woche, waagrecht 
   zeitSichtbar();
   const gebiet = zustand.g < 0 ? "" : ` in ${D.land.einheiten[zustand.g].name}`;
   $("zeittitel").textContent = `Zeitstrahl: ${D.erreger[zustand.e]}${gebiet}`;
-  $("zeithinweis").textContent = `Anteil der Kreise je Empfehlung im Zeitverlauf. Seitlich scrollen für frühere Wochen.`;
+  $("zeithinweis").textContent = `Anteil der Kreise je Empfehlung im Zeitverlauf.`;
 }
 
 function usp() {
