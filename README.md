@@ -25,7 +25,7 @@ Jede Woche für alle 400 Kreise und 16 Länder: Last, Erwartung und empfohlene M
 
 <br>
 
-Die Seite läuft im Browser, ohne Anmeldung und ohne Installation. Sie wird jeden Donnerstag automatisch mit den neuesten Meldedaten und Abwasserwerten des Robert Koch-Instituts aktualisiert.
+Die Seite läuft im Browser, ohne Anmeldung und ohne Installation. Sie wird jeden Montag und Donnerstag automatisch mit den neuesten Meldedaten und Abwasserwerten des Robert Koch-Instituts aktualisiert. Montags kommt die abgeschlossene Vorwoche dazu, donnerstags sind deren Nachmeldungen und das neue Abwasser vom Mittwoch eingerechnet.
 
 ## So lesen Sie das Lagebild
 

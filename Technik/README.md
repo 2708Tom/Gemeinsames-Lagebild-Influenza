@@ -4,7 +4,7 @@ Wie das Lagebild entsteht, wie man es selbst rechnet und woher die Daten kommen.
 
 ## Ablauf
 
-Jeden Donnerstag um 6 Uhr (Winterzeit) startet auf GitHub der Workflow „Lagebild aktualisieren“ (`.github/workflows/lagebild.yml`, Reiter „Actions“). Er läuft auf einem Linux-Rechner von GitHub:
+Jeden Montag und Donnerstag um 6:17 Uhr (Winterzeit) startet auf GitHub der Workflow „Lagebild aktualisieren“ (`.github/workflows/lagebild.yml`, Reiter „Actions“). Er läuft auf einem Linux-Rechner von GitHub:
 
 1. Abruf der Meldefälle Influenza je Kreis und Woche (RKI SurvStat, laufendes und voriges Jahr, damit Nachmeldungen ankommen) und des Abwassers je Klärwerk (RKI AMELAG).
 2. Aufbereitung in den Notebooks 01, 03 und 15: Berliner Bezirke zu Berlin zusammenfassen, Inzidenz je 100.000, Abwasser je Kreis.

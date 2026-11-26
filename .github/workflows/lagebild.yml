@@ -1,9 +1,9 @@
-# Jeden Donnerstag: neueste RKI-Daten holen, Lagebild neu rechnen und als Website veröffentlichen.
+# Montags (neue Woche) und donnerstags (Nachmeldungen, neues Abwasser): neueste RKI-Daten holen, Lagebild neu rechnen und als Website veröffentlichen.
 # Von Hand starten: Reiter „Actions“, „Lagebild aktualisieren“, „Run workflow“.
 name: Lagebild aktualisieren
 on:
   schedule:
-    - cron: "0 5 * * 4"          # donnerstags 5 Uhr UTC (6 Uhr Winterzeit, 7 Uhr Sommerzeit)
+    - cron: "17 5 * * 1,4"       # montags und donnerstags 5:17 Uhr UTC (6:17 Uhr Winterzeit, 7:17 Uhr Sommerzeit); nicht zur vollen Stunde, da ist GitHub am vollsten
   workflow_dispatch:
   push:
     branches: [main]             # nach eigenem Hochladen nur die Website neu veröffentlichen
