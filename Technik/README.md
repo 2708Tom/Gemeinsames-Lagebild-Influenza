@@ -52,3 +52,5 @@ Schwellen und Mischungsgewichte stammen aus der Prüfung über frühere Saisons 
 - Abwasser: Robert Koch-Institut, Abwassersurveillance AMELAG, [GitHub](https://github.com/robert-koch-institut/Abwassersurveillance_AMELAG), Lizenz CC BY 4.0
 - Einwohner: Statistische Ämter des Bundes und der Länder, Regionaldatenbank Deutschland, Tabelle 12411-01-01-4, Lizenz dl-de/by-2-0
 - Kreisgrenzen: © GeoBasis-DE / BKG (VG250), Lizenz dl-de/by-2-0
+
+Der eigene Code, die Website-Vorlage und die Texte dieses Repositorys stehen unter CC BY 4.0 (siehe [LICENSE](../LICENSE)); für die Daten gelten die oben genannten Lizenzen der Quellen.

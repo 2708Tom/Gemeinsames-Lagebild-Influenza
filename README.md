@@ -8,6 +8,7 @@ Jede Woche für alle 400 Kreise und 16 Länder: Last, Erwartung und empfohlene M
 [![Wöchentliche Aktualisierung](https://img.shields.io/github/actions/workflow/status/2708Tom/Lagebild-Influenza/lagebild.yml?branch=main&label=w%C3%B6chentliche%20Aktualisierung&style=flat-square)](https://github.com/2708Tom/Lagebild-Influenza/actions/workflows/lagebild.yml)
 [![Version](https://img.shields.io/github/v/release/2708Tom/Lagebild-Influenza?label=Version&color=555&style=flat-square)](https://github.com/2708Tom/Lagebild-Influenza/releases)
 [![Daten](https://img.shields.io/badge/Daten-RKI%20SurvStat%20und%20AMELAG-1f6feb?style=flat-square)](#daten-und-technik)
+[![Lizenz](https://img.shields.io/badge/Lizenz-CC%20BY%204.0-2ea44f?style=flat-square)](#lizenz)
 
 ### [Lagebild öffnen →](https://2708tom.github.io/Lagebild-Influenza/)
 
@@ -86,6 +87,12 @@ Jede Farbe ist eine Empfehlung. Sie ergibt sich aus zwei Fragen:
 ## Daten und Technik
 
 Robert Koch-Institut (SurvStat, AMELAG), Statistische Ämter des Bundes und der Länder, © GeoBasis-DE / BKG. Methode, Ablauf der wöchentlichen Aktualisierung, Installation und Quellen stehen im Ordner [Technik](Technik/).
+
+## Lizenz
+
+Eigene Inhalte dieses Repositorys (Code, Website, Texte und Bilder): © 2026 Tom Thum, veröffentlicht unter [Creative Commons Namensnennung 4.0 International (CC BY 4.0)](LICENSE). Weiterverwenden, verändern und weitergeben ist erlaubt, auch kommerziell, mit Nennung des Urhebers, einem Link zur Lizenz und dem Hinweis, ob etwas verändert wurde.
+
+Die Daten gehören ihren Quellen und stehen unter deren eigenen Lizenzen (siehe [Technik](Technik/#datenquellen)).
 
 <br>
 
