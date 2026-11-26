@@ -8,7 +8,7 @@ Jeden Montag und Donnerstag um 6:17 Uhr (Winterzeit) startet auf GitHub der Work
 
 1. Abruf der Meldefälle Influenza je Kreis und Woche (RKI SurvStat, laufendes und voriges Jahr, damit Nachmeldungen ankommen) und des Abwassers je Klärwerk (RKI AMELAG).
 2. Aufbereitung in den Notebooks 01, 03 und 15: Berliner Bezirke zu Berlin zusammenfassen, Inzidenz je 100.000, Abwasser je Kreis.
-3. Rechnung in `lagebild_erzeugen.py`: Erwartung und Prognose (XGBoost), Last nach MEM, Stufe und empfohlene Maßnahme für alle Wochen ab Saison 2023, je Kreis und Land.
+3. Rechnung in `lagebild_erzeugen.py`: Erwartung und Prognose (XGBoost), Last nach MEM, Stufe gegenüber der Erwartung und Lagestufe für alle Wochen ab Saison 2023, je Kreis und Land.
 4. Die fertige Seite `08_Lagebild/Lagebild.html` und die neuen Daten werden im Repository gespeichert und als Website veröffentlicht.
 
 Von Hand starten: Reiter „Actions“, „Lagebild aktualisieren“, „Run workflow“.

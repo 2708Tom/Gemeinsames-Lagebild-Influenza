@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light dark">
-<meta name="description" content="Wo in Deutschland ist Influenza gerade ungewöhnlich? Wöchentliches Lagebild für alle 400 Kreise aus Melde- und Abwasserdaten des RKI, mit empfohlener Maßnahme je Kreis. Projektarbeit an der TH Köln.">
+<meta name="description" content="Wo in Deutschland ist Influenza gerade ungewöhnlich? Wöchentliches Lagebild für alle 400 Kreise aus Melde- und Abwasserdaten des RKI, mit Lagestufe je Kreis. Projektarbeit an der TH Köln.">
 <link rel="canonical" href="https://2708tom.github.io/Lagebild-Influenza/">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="de_DE">
@@ -14,13 +14,13 @@
 <meta property="og:image" content="https://2708tom.github.io/Lagebild-Influenza/vorschau.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Karte der Kreise in Deutschland, eingefärbt nach empfohlener Maßnahme">
+<meta property="og:image:alt" content="Karte der Kreise in Deutschland, eingefärbt nach Lagestufe">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="author" content="Tom Thum">
 <title>Gemeinsames Lagebild Influenza</title>
 <style>
   :root {
-    /* Farben der empfohlenen Maßnahme nach DIN EN ISO 22324 (Grün, Gelb, Orange, Rot), gedämpft; keine Daten: weiß, grau schraffiert */
+    /* Farben der Lagestufe nach DIN EN ISO 22324 (Grün, Gelb, Orange, Rot), gedämpft; keine Daten: weiß, grau schraffiert */
     --normal: #DCE5DE; --erhoeht: #F2C14E; --orange: #E8862E; --deutlich: #C00009; --grau: #808080;
     --keine: repeating-linear-gradient(135deg, var(--flaeche) 0 3px, var(--schraffur) 3px 4px);
     --text: #1d1d1f; --text-2: #63666b; --linie: #ececef; --flaeche: #ffffff; --hinter: #f6f6f8;
@@ -166,9 +166,9 @@
       <h2 id="kartentitel"></h2>
       <svg id="karte"></svg>
       <div class="legende">
-        <b style="font-weight:600;color:var(--text)">Empfohlene Maßnahme:</b>
-        <span style="--f:var(--normal)">keine Maßnahme</span><span style="--f:var(--erhoeht)">beobachten</span><span style="--f:var(--orange)">prüfen</span>
-        <span style="--f:var(--deutlich)">prüfen und informieren</span><span style="--f:var(--keine)">keine Daten</span>
+        <b style="font-weight:600;color:var(--text)">Lagestufe:</b>
+        <span style="--f:var(--normal)">unauffällig</span><span style="--f:var(--erhoeht)">erhöht</span><span style="--f:var(--orange)">auffällig</span>
+        <span style="--f:var(--deutlich)">stark auffällig</span><span style="--f:var(--keine)">keine Daten</span>
         <b style="font-weight:400">↗ ↘ deutlicher Anstieg oder Rückgang in 3 Wochen</b>
       </div>
     </div>
@@ -188,7 +188,7 @@
     <h2>Was dieses Lagebild anders macht</h2>
     <div class="usp-grid">
       <ol class="usp-liste">
-        <li><b>Zwei Fragen statt einer Zahl:</b> Wie viel ist da (Last)? Ist das ungewöhnlich (Erwartung)? Beides zusammen ergibt die Empfehlung.</li>
+        <li><b>Zwei Fragen statt einer Zahl:</b> Wie viel ist da (Last)? Ist das ungewöhnlich (Erwartung)? Beides zusammen ergibt die Lagestufe.</li>
         <li><b>Kreis und Land</b> nach derselben Methode.</li>
         <li><b>Last nach europäischem Standard</b> (MEM).</li>
         <li><b>Erwartung je Kreis und Jahreszeit.</b></li>
@@ -204,11 +204,11 @@
 </main>
 <footer>
   <details class="mehr"><summary><b>Methode und Daten</b></summary>
-  <p><b>Empfohlene Maßnahme (Farbe):</b> Sie ergibt sich aus zwei Fragen: Wie viel Influenza ist da (Last), und liegt das deutlich über der Erwartung?</p>
+  <p><b>Lagestufe (Farbe):</b> Sie ergibt sich aus zwei Fragen: Wie viel Influenza ist da (Last), und liegt das deutlich über der Erwartung?</p>
   <ul>
-    <li>Last niedrig: keine Maßnahme; deutlich über der Erwartung: beobachten.</li>
-    <li>Last mittel: beobachten; deutlich über der Erwartung: prüfen.</li>
-    <li>Last hoch: prüfen; deutlich über der Erwartung: prüfen und informieren.</li>
+    <li>Last niedrig: unauffällig; deutlich über der Erwartung: erhöht.</li>
+    <li>Last mittel: erhöht; deutlich über der Erwartung: auffällig.</li>
+    <li>Last hoch: auffällig; deutlich über der Erwartung: stark auffällig.</li>
   </ul>
   <p><b>Last:</b> gemeldete Fälle je 100.000 Einwohner und Woche, gemittelt über die letzten drei Wochen. Die Grenzen für „mittel“ und „hoch“ stammen aus der Moving Epidemic Method (MEM), dem Standard der europäischen Grippe-Überwachung (Vega et al. 2013 und 2015). Sie werden aus den höchsten Wochenwerten früherer Saisons berechnet: mittel = MEM „medium“, hoch = MEM „high“.</p>
   <p>Genutzt werden die Saisons ab 2023, weil seit der Pandemie deutlich mehr getestet wird. Die Grenzen gelten im Sommer wie im Winter.</p>
@@ -219,8 +219,8 @@
   <p><b>Prognose:</b> Das Modell sagt den Verlauf 1 bis 7 Wochen voraus und kennt dafür nur, was am Stichtag bekannt ist. Kurzfristig wird es mit dem letzten Stand gemischt („bleibt wie zuletzt“), weil dieser nach einer Woche oft genauer ist. In der grauen Fläche lag der gemeldete Wert im Test an früheren Saisons in 8 von 10 Fällen.</p>
   <p><b>Pfeil (↗ ↘):</b> Die Prognose für drei Wochen liegt deutlich über oder unter dem Stand, und die letzte Meldewoche zeigt schon in diese Richtung.</p>
   <p><b>Ungewohnte Lage:</b> Liegt der Stand höher als in 99 % der Wochen früherer Saisons in derselben Jahreszeit, kennt das Modell so eine Lage nicht. Im Test war die Prognose dort viermal so ungenau. Statt einer Prognose zeigt die Website dann, wie es in ähnlichen Lagen früherer Saisons weiterging.</p>
-  <p><b>Grenzen:</b> Ob eine Empfehlung im Einzelfall richtig lag, lässt sich mit offenen Daten nicht prüfen; Ausbruchsmeldungen der Gesundheitsämter sind nicht öffentlich. Die Farben folgen DIN EN ISO 22324 (Grün, Gelb, Orange, Rot); Stufe und Zahl stehen immer dabei.</p>
-  <p><b>Empfehlung, nicht Anordnung:</b> Beobachten, prüfen und informieren sind Empfehlungen. Die Daten zeigen nur, wann etwas auffällig ist; über Maßnahmen entscheidet die zuständige Behörde.</p>
+  <p><b>Grenzen:</b> Ob eine Lagestufe im Einzelfall zutraf, lässt sich mit offenen Daten nicht prüfen; Ausbruchsmeldungen der Gesundheitsämter sind nicht öffentlich. Die Farben folgen DIN EN ISO 22324 (Grün, Gelb, Orange, Rot); Stufe und Zahl stehen immer dabei.</p>
+  <p><b>Lage, nicht Maßnahme:</b> Die Lagestufe beschreibt nur, wie auffällig die Lage ist. Über Maßnahmen entscheidet die zuständige Behörde.</p>
   <p><b>Daten:</b> RKI SurvStat (Meldefälle), RKI AMELAG (Abwasser), BKG (Kreisgrenzen). Die jüngsten Wochen sind vorläufig, Nachmeldungen sind möglich.</p>
   </details>
 </footer>
@@ -249,7 +249,7 @@ function themaSetzen(t) {
 }
 themaSetzen(thema);
 const ABW = ["nicht verfügbar", "unauffällig", "erhöht"];
-const EINORDNUNG = ["keine Maßnahme", "beobachten", "prüfen", "prüfen und informieren"], LAST = ["niedrig", "mittel", "hoch"];
+const EINORDNUNG = ["unauffällig", "erhöht", "auffällig", "stark auffällig"], LAST = ["niedrig", "mittel", "hoch"];
 const PFEIL = { 1: "↗", "-1": "↘" };
 const HINWEISE = [[1, "vorläufig", "Jüngste drei Wochen: Nachmeldungen möglich"],
                   [4, "wenige Fälle", "Unter 20 Fällen: Die Abweichung schwankt stark"],
@@ -333,7 +333,7 @@ function aufbauen() {
   $("zeitstrahl").addEventListener("mousemove", ev => {
     const w = ev.target.dataset.w; if (w == null) { tip.style.display = "none"; return; }
     const [n, y] = kw(D.wochen[w]), a = anteile(+w);
-    zeigen(ev, `KW ${n}/${y}: beobachten ${zahl(a[0], 0)} %, prüfen ${zahl(a[1], 0)} %, prüfen und informieren ${zahl(a[2], 0)} %`);
+    zeigen(ev, `KW ${n}/${y}: erhöht ${zahl(a[0], 0)} %, auffällig ${zahl(a[1], 0)} %, stark auffällig ${zahl(a[2], 0)} %`);
   });
   $("zeitstrahl").addEventListener("mouseleave", () => tip.style.display = "none");
   $("zeitstrahl").onclick = ev => { if (ev.target.dataset.w != null) { zustand.w = +ev.target.dataset.w; zeichnen(); } };
@@ -342,7 +342,7 @@ function aufbauen() {
   $("detail").onclick = ev => { const a = ev.target.closest("[data-l]"); if (a) gebietWaehlen(+a.dataset.l); };
 }
 
-function anteile(w) {                        // Anteil der Kreise im gewählten Gebiet je Empfehlung
+function anteile(w) {                        // Anteil der Kreise im gewählten Gebiet je Lagestufe
   const s = D.lage[zustand.e].o.map((r, i) => imGebiet(i) ? r[w] : null).filter(x => x != null);
   return [1, 2, 3].map(o => s.length ? s.filter(x => x === o).length / s.length * 100 : 0);
 }
@@ -382,7 +382,7 @@ function zeitstrahl() {                     // feste Breite je Woche, waagrecht 
   zeitSichtbar();
   const gebiet = zustand.g < 0 ? "" : ` in ${D.land.einheiten[zustand.g].name}`;
   $("zeittitel").textContent = `Zeitstrahl: ${D.erreger[zustand.e]}${gebiet}`;
-  $("zeithinweis").textContent = `Anteil der Kreise je Empfehlung im Zeitverlauf.`;
+  $("zeithinweis").textContent = `Anteil der Kreise je Lagestufe im Zeitverlauf.`;
 }
 
 function usp() {
@@ -411,7 +411,7 @@ function karte() {
     p.setAttribute("fill", o == null ? KEINE : FARBE[o]);
     p.classList.toggle("fremd", !imGebiet(i));
   });
-  let pfeile = "";                                             // Pfeile nur bei Kreisen mit Empfehlung über „keine Maßnahme“
+  let pfeile = "";                                             // Pfeile nur bei Kreisen über „unauffällig“
   document.querySelectorAll("#kreise .kreis").forEach(p => {
     const i = +p.dataset.k, r = L.o[i][w] && imGebiet(i) ? richtung(QK, i, w) : 0;
     if (!r) return;
@@ -449,14 +449,14 @@ function karte() {
 function detail() {
   const { w, d } = zustand, Q = quelle(d), k = d === "l" ? zustand.g : zustand.k, L = Q.L, ein = Q.E[k];
   const s = L.s[k][w], o = L.o[k][w], l = L.l[k][w], ri = richtung(Q, k, w), G = Q.G;
-  // Spalten der Matrix: wie erwartet, leicht, deutlich darüber. „Leicht“ führt zur selben Empfehlung wie „wie erwartet“.
+  // Spalten der Matrix: wie erwartet, leicht, deutlich darüber. „Leicht“ führt zur selben Lagestufe wie „wie erwartet“.
   const zelle = (zl, sp) => { const dt = sp === 2, e = zl === 2 && dt ? 3 : zl === 2 || (zl === 1 && dt) ? 2 : (zl === 1 || dt) ? 1 : 0;
     return `<td class="m${e}${zl === l && sp === s ? " aktiv" : ""}">${EINORDNUNG[e]}</td>`; };
   let zusatz = "";
-  if (d === "k") {                                             // Kreis: Land mit seiner eigenen Empfehlung
+  if (d === "k") {                                             // Kreis: Land mit seiner eigenen Lagestufe
     const lg = ein.land, lo = D.land.lage[zustand.e].o[lg][w];
     zusatz = `<dt>Land</dt><dd><span class="link" data-l="${lg}">${D.land.einheiten[lg].name}</span> ${badge(lo)}</dd>`;
-  } else {                                                      // Land: Empfehlungen seiner Kreise
+  } else {                                                      // Land: Lagestufen seiner Kreise
     const o_k = D.kreise.map((kr, i) => kr.land === k ? D.lage[zustand.e].o[i][w] : undefined).filter(x => x !== undefined);
     zusatz = `<dt>Kreise im Land</dt><dd>${[3, 2, 1, 0].map(x => [x, o_k.filter(y => y === x).length]).filter(([, n]) => n).map(([x, n]) => `${n} ${EINORDNUNG[x]}`).join(", ") || "keine"}</dd>`;
   }
@@ -471,16 +471,16 @@ function detail() {
     <dt>Richtung</dt><dd>${ri === 1 ? "↗ steigt deutlich" : ri === -1 ? "↘ fällt deutlich" : "keine deutliche Änderung"}</dd>
     ${zusatz}
     ${h & ~8 ? `<dt>Hinweise</dt><dd>${hinweise(h & ~8)}</dd>` : ""}</dl>
-    <table class="matrix"><caption class="hinweis" style="text-align:left;caption-side:top;padding-bottom:3px">Empfehlung aus Last und Erwartung</caption>
+    <table class="matrix"><caption class="hinweis" style="text-align:left;caption-side:top;padding-bottom:3px">Lagestufe aus Last und Erwartung</caption>
       <tr><th></th><th>wie erwartet</th><th>leicht über<br>der Erwartung</th><th>deutlich über<br>der Erwartung</th></tr>
       ${[2, 1, 0].map(zl => `<tr><th style="text-align:right">Last ${LAST[zl]}</th>${zelle(zl, 0)}${zelle(zl, 1)}${zelle(zl, 2)}</tr>`).join("")}</table>
     <svg id="verlauf" viewBox="0 0 640 270"></svg>
     <div class="hinweis" id="prognosehinweis"></div>
     <svg id="abweichung" viewBox="0 0 640 200" style="margin-top:10px"></svg>
     <details class="mehr"><summary>Erklärung und weitere Informationen</summary>
-      <p><b>Farbe:</b> empfohlene Maßnahme aus Last und Erwartung.</p>
+      <p><b>Farbe:</b> Lagestufe aus Last und Erwartung.</p>
       <p><b>Last:</b> gemeldete Fälle je 100.000 und Woche, Mittel der letzten drei Wochen. Mittel ab ${zahl(G.mittel)}, hoch ab ${zahl(G.hoch)} (Moving Epidemic Method, Saisons ab 2023).</p>
-      <p><b>Erwartung:</b> ${erwartung} (XGBoost). Leicht darüber ab dem 90-%-Wert des Kalendermonats, deutlich ab dem 98-%-Wert; mit erhöhtem Abwasser ab dem 95-%-Wert (gepunktete Linie). „Leicht“ ändert die Empfehlung nicht, es zeigt nur früh, wohin es geht.</p>
+      <p><b>Erwartung:</b> ${erwartung} (XGBoost). Leicht darüber ab dem 90-%-Wert des Kalendermonats, deutlich ab dem 98-%-Wert; mit erhöhtem Abwasser ab dem 95-%-Wert (gepunktete Linie). „Leicht“ ändert die Lagestufe nicht, es zeigt nur früh, wohin es geht.</p>
       <p><b>Prognose:</b> XGBoost mit dem Wissen vom Stichtag, je Woche gemischt mit „bleibt wie zuletzt“. Typischer Fehler ${zahl(Math.expm1(Q.mae[0]) * 100, 0)} % nach 1 Woche, ${zahl(Math.expm1(Q.mae[6]) * 100, 0)} % nach 7 Wochen. Graue Fläche: In 8 von 10 Fällen lag der Wert im Test darin.</p>
       <p><b>Ungewohnte Lage:</b> Der Stand ist höher als in 99 % der Wochen früherer Saisons in derselben Jahreszeit. Das Modell kennt so etwas nicht; im Test war die Prognose dort viermal so ungenau. Deshalb keine Prognose, sondern der Bereich, in dem der Wert in ähnlichen Lagen früherer Saisons (ähnlich hoher Stand) nach 1 bis 7 Wochen lag.</p>
     </details>`;
@@ -499,7 +499,7 @@ function csvText() {                          // Kreistabelle wie angezeigt; Sem
   const { e, w } = zustand, L = D.lage[e], QK = quelle("k");
   const zahlCsv = (v, n) => v == null ? "" : v.toLocaleString("de-DE", { minimumFractionDigits: n, maximumFractionDigits: n, useGrouping: false });
   const feld = v => /[;"\n]/.test(v) ? `"${v.replace(/"/g, '""')}"` : v;
-  const kopf = ["Stichtag", "Kreis", "Land", "Empfohlene Maßnahme", "Last", "Gemeldet je 100.000", "Erwartet je 100.000", "gemeldet / erwartet",
+  const kopf = ["Stichtag", "Kreis", "Land", "Lagestufe", "Last", "Gemeldet je 100.000", "Erwartet je 100.000", "gemeldet / erwartet",
                 "gegenüber Erwartung", "Abwasser", "Richtung", "Hinweise"];
   const zeilen = kreisZeilen().map(({ i, kr, o, s, z }) => {
     const r = richtung(QK, i, w), h = L.h[i][w] || 0;
@@ -530,7 +530,7 @@ function druckVorbereiten() {
   if (thema !== "light") { document.documentElement.setAttribute("data-theme", "light"); farbenLesen(); zeichnen(); }
   fuss.open = true;
   const [n, j] = kw(D.wochen[zustand.w]), gebiet = zustand.g < 0 ? "Deutschland" : D.land.einheiten[zustand.g].name;
-  $("druckinfo").textContent = `Stichtag: KW ${n}/${j} (Woche ab ${datum(D.wochen[zustand.w])}), Gebiet: ${gebiet}. Kreistabelle: Kreise ab „prüfen“.`;
+  $("druckinfo").textContent = `Stichtag: KW ${n}/${j} (Woche ab ${datum(D.wochen[zustand.w])}), Gebiet: ${gebiet}. Kreistabelle: Kreise ab „auffällig“.`;
 }
 function druckZuruecksetzen() {
   if (!vorDruck) return;
@@ -557,8 +557,8 @@ function zeichnen() {
     ? `<div class="kachel"><div class="titel">Deutschland</div><div class="wert">${zahl(D.bund[e][w])} <span class="klein">je 100.000</span></div><div class="klein">gemeldet in dieser Woche, Vorwoche ${zahl(D.bund[e][w - 1])}</div></div>`
     : `<div class="kachel"><div class="titel">${gname}</div><div class="wert">${zahl(D.land.inz[e][g][w])} <span class="klein">je 100.000</span></div><div class="klein">Land: ${badge(LL.o[g][w])}, Vorwoche ${zahl(D.land.inz[e][g][w - 1])}</div></div>`;
   $("kacheln").innerHTML = `
-    <div class="kachel"><div class="titel">Prüfen (und informieren)</div><div class="wert">${n(2) + n(3)} <span class="klein">von ${bewertet} Kreisen</span></div><div class="klein">davon ${n(3)} rot</div></div>
-    <div class="kachel"><div class="titel">Beobachten</div><div class="wert">${n(1)} <span class="klein">Kreise</span></div><div class="klein">gelb markiert</div></div>
+    <div class="kachel"><div class="titel">Auffällig oder stark auffällig</div><div class="wert">${n(2) + n(3)} <span class="klein">von ${bewertet} Kreisen</span></div><div class="klein">davon ${n(3)} rot</div></div>
+    <div class="kachel"><div class="titel">Erhöht</div><div class="wert">${n(1)} <span class="klein">Kreise</span></div><div class="klein">gelb markiert</div></div>
     ${flaeche}
     <div class="kachel"><div class="titel">Abwasser Influenza</div><div class="wert">${abwV.length ? abwV.filter(a => a === 2).length + ' <span class="klein">von ' + abwV.length + " erhöht</span>" : "keine"}</div><div class="klein">${abwV.length ? "Kreise mit Messstelle" : "in dieser Woche keine Messwerte"}</div></div>`;
 
@@ -567,7 +567,7 @@ function zeichnen() {
 
   // Länder
   const QL = quelle("l");
-  $("laender").innerHTML = `<thead><tr><th>Land</th><th>Empfohlene Maßnahme</th><th>Last</th><th class="zahl">Gemeldet</th><th class="zahl">Erwartet</th><th>gegenüber Erwartung</th><th>Abwasser</th><th>Richtung</th><th class="zahl">Kreise orange/rot</th></tr></thead><tbody>` +
+  $("laender").innerHTML = `<thead><tr><th>Land</th><th>Lagestufe</th><th>Last</th><th class="zahl">Gemeldet</th><th class="zahl">Erwartet</th><th>gegenüber Erwartung</th><th>Abwasser</th><th>Richtung</th><th class="zahl">Kreise orange/rot</th></tr></thead><tbody>` +
     D.land.einheiten.map((ld, i) => { const kr = D.kreise.map((x, j) => x.land === i ? L.o[j][w] : null).filter(x => x >= 2).length;
       return `<tr data-l="${i}" class="${i === g ? "gewaehlt" : ""}"><td>${ld.name}</td><td>${badge(LL.o[i][w])}</td><td>${LL.l[i][w] == null ? "" : LAST[LL.l[i][w]]}</td>
       <td class="zahl">${zahl(LL.g[i][w])}</td><td class="zahl">${zahl(LL.e[i][w])}</td><td>${stufeText(LL.s[i][w])}</td>
@@ -578,7 +578,7 @@ function zeichnen() {
   const alle = L.h.reduce((u, reihe) => u | ((reihe[w] || 0) & ~KREISBEZOGEN), 0);
   $("allgemein").innerHTML = alle ? `Gilt für alle Kreise: ${hinweise(alle)}` : "";
   const zeilen = kreisZeilen();
-  $("tabelle").innerHTML = `<thead><tr><th>Kreis</th><th>Empfohlene Maßnahme</th><th>Last</th><th class="zahl">Gemeldet</th><th class="zahl">Erwartet</th><th class="zahl">gemeldet / erwartet</th><th>gegenüber Erwartung</th><th>Abwasser</th><th>Richtung</th><th>Hinweis</th></tr></thead><tbody>` +
+  $("tabelle").innerHTML = `<thead><tr><th>Kreis</th><th>Lagestufe</th><th>Last</th><th class="zahl">Gemeldet</th><th class="zahl">Erwartet</th><th class="zahl">gemeldet / erwartet</th><th>gegenüber Erwartung</th><th>Abwasser</th><th>Richtung</th><th>Hinweis</th></tr></thead><tbody>` +
     zeilen.map(({ i, kr, o, s, z }) => `<tr data-k="${i}" class="${i === k && zustand.d === "k" ? "gewaehlt" : ""}${o >= 2 ? "" : " druck-aus"}"><td>${kr.name}</td><td>${badge(o)}</td><td>${L.l[i][w] == null ? "" : LAST[L.l[i][w]]}</td>
       <td class="zahl">${zahl(L.g[i][w])}</td><td class="zahl">${zahl(L.e[i][w])}</td><td class="zahl">${faktor(z)}</td><td>${stufeText(s)}</td>
       <td>${ABW[L.a[i][w] ?? 0]}</td><td>${PFEIL[richtung(QK, i, w)] || ""}</td><td>${hinweise((L.h[i][w] || 0) & KREISBEZOGEN)}</td></tr>`).join("") + "</tbody>";
@@ -609,7 +609,7 @@ function verlauf(Q, k) {
   svg += `<polyline points="${beob.map(b => `${x(b[0])},${y(b[1])}`).join(" ")}" fill="none" stroke="${C.text}" stroke-width="2.2"/>`;
   svg += `<line x1="${x(w)}" x2="${x(w)}" y1="${ob}" y2="${H - un}" stroke="${C.text}" stroke-dasharray="2 3"/><text x="${x(w) - 4}" y="${H - un - 6}" font-size="11" text-anchor="end" fill="${C.text}">Stichtag</text>`;
   for (let i = von; i <= w; i++) { const o = L.o[k][i]; svg += `<rect x="${x(i) - 4}" y="${H - un + 8}" width="8" height="8" rx="2" fill="${o == null ? KEINE : FARBE[o]}" stroke="${C.raster2}" stroke-width=".5"/>`; }
-  svg += `<text x="${li}" y="${H - un + 30}" font-size="11" fill="${C.t2}">Empfohlene Maßnahme je Woche</text>`;
+  svg += `<text x="${li}" y="${H - un + 30}" font-size="11" fill="${C.t2}">Lagestufe je Woche</text>`;
   for (let i = von; i <= bis; i += 4) { const d = new Date(D.wochen[0] + "T00:00:00Z"); d.setUTCDate(d.getUTCDate() + 7 * i);
     svg += `<text x="${x(i)}" y="${H - 4}" font-size="11" text-anchor="middle" fill="${C.t2}">${String(d.getUTCDate()).padStart(2, "0")}.${String(d.getUTCMonth() + 1).padStart(2, "0")}.${String(d.getUTCFullYear()).slice(2)}</text>`; }
   svg += `<text x="${li}" y="${ob - 2}" font-size="11" fill="${C.t2}">Inzidenz je 100.000 und Woche</text>`;

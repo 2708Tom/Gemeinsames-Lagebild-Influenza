@@ -3,7 +3,7 @@
 # Gemeinsames Lagebild Influenza
 
 **Wo in Deutschland ist Influenza gerade ungewöhnlich, und was folgt daraus?**<br>
-Jede Woche für alle 400 Kreise und 16 Länder: Last, Erwartung und empfohlene Maßnahme, dazu Abwasser und Prognose.
+Jede Woche für alle 400 Kreise und 16 Länder: Last, Erwartung und Lagestufe, dazu Abwasser und Prognose.
 
 [![Wöchentliche Aktualisierung](https://img.shields.io/github/actions/workflow/status/2708Tom/Lagebild-Influenza/lagebild.yml?branch=main&label=w%C3%B6chentliche%20Aktualisierung&style=flat-square)](https://github.com/2708Tom/Lagebild-Influenza/actions/workflows/lagebild.yml)
 [![Version](https://img.shields.io/github/v/release/2708Tom/Lagebild-Influenza?label=Version&color=555&style=flat-square)](https://github.com/2708Tom/Lagebild-Influenza/releases)
@@ -15,7 +15,7 @@ Jede Woche für alle 400 Kreise und 16 Länder: Last, Erwartung und empfohlene M
 <a href="https://2708tom.github.io/Lagebild-Influenza/">
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset=".github/bilder/vorschau-dunkel.png">
-  <img src=".github/bilder/vorschau-hell.png" alt="Karte der Kreise mit empfohlenen Maßnahmen und Detailansicht eines Kreises" width="100%">
+  <img src=".github/bilder/vorschau-hell.png" alt="Karte der Kreise nach Lagestufe und Detailansicht eines Kreises" width="100%">
 </picture>
 </a>
 
@@ -29,16 +29,16 @@ Die Seite läuft im Browser, ohne Anmeldung und ohne Installation. Sie wird jede
 
 ## So lesen Sie das Lagebild
 
-Jede Farbe ist eine Empfehlung. Sie ergibt sich aus zwei Fragen:
+Jede Farbe ist eine Lagestufe. Sie ergibt sich aus zwei Fragen:
 
 1. **Wie viel ist da? (Last)** Gemeldete Fälle je 100.000 Einwohner und Woche, gemittelt über die letzten drei Wochen. Die Grenzen für niedrig, mittel und hoch folgen dem europäischen Standard der Grippe-Überwachung (Moving Epidemic Method).
 2. **Ist das ungewöhnlich? (Erwartung)** Ein Modell schätzt, wie viele Fälle in diesem Kreis zu dieser Jahreszeit normal wären. Verglichen wird gemeldet / erwartet. „Deutlich darüber“ heißt ungewöhnlich, nicht Ausbruch.
 
 | Last | wie erwartet | leicht darüber | deutlich darüber |
 |:--|:-:|:-:|:-:|
-| **hoch** | ![prüfen](https://img.shields.io/badge/-pr%C3%BCfen-E8862E?style=flat-square) | ![prüfen](https://img.shields.io/badge/-pr%C3%BCfen-E8862E?style=flat-square) | ![prüfen und informieren](https://img.shields.io/badge/-pr%C3%BCfen%20und%20informieren-C00009?style=flat-square) |
-| **mittel** | ![beobachten](https://img.shields.io/badge/-beobachten-F2C14E?style=flat-square) | ![beobachten](https://img.shields.io/badge/-beobachten-F2C14E?style=flat-square) | ![prüfen](https://img.shields.io/badge/-pr%C3%BCfen-E8862E?style=flat-square) |
-| **niedrig** | ![keine Maßnahme](https://img.shields.io/badge/-keine%20Ma%C3%9Fnahme-DCE5DE?style=flat-square) | ![keine Maßnahme](https://img.shields.io/badge/-keine%20Ma%C3%9Fnahme-DCE5DE?style=flat-square) | ![beobachten](https://img.shields.io/badge/-beobachten-F2C14E?style=flat-square) |
+| **hoch** | ![auffällig](https://img.shields.io/badge/-auff%C3%A4llig-E8862E?style=flat-square) | ![auffällig](https://img.shields.io/badge/-auff%C3%A4llig-E8862E?style=flat-square) | ![stark auffällig](https://img.shields.io/badge/-stark%20auff%C3%A4llig-C00009?style=flat-square) |
+| **mittel** | ![erhöht](https://img.shields.io/badge/-erh%C3%B6ht-F2C14E?style=flat-square) | ![erhöht](https://img.shields.io/badge/-erh%C3%B6ht-F2C14E?style=flat-square) | ![auffällig](https://img.shields.io/badge/-auff%C3%A4llig-E8862E?style=flat-square) |
+| **niedrig** | ![unauffällig](https://img.shields.io/badge/-unauff%C3%A4llig-DCE5DE?style=flat-square) | ![unauffällig](https://img.shields.io/badge/-unauff%C3%A4llig-DCE5DE?style=flat-square) | ![erhöht](https://img.shields.io/badge/-erh%C3%B6ht-F2C14E?style=flat-square) |
 
 **Abwasser.** Influenza im Abwasser ist eine zweite Quelle, die nicht davon abhängt, wie viel getestet wird. Ist es erhöht, gilt ein Kreis früher als deutlich darüber.
 
@@ -46,11 +46,11 @@ Jede Farbe ist eine Empfehlung. Sie ergibt sich aus zwei Fragen:
 
 **Ungewohnte Lage.** Ein oranger Hinweis erscheint, wenn der Stand höher ist als fast je zuvor zu dieser Jahreszeit. Das Modell kennt solche Lagen nicht; statt einer Prognose zeigt die Seite, wie es in ähnlichen Lagen früherer Saisons weiterging.
 
-**Zeitverlauf.** Der Zeitstrahl zeigt für jede Woche, welcher Anteil der Kreise beobachtet, geprüft oder informiert werden sollte. Ein Klick auf eine Woche zeigt deren Lage.
+**Zeitverlauf.** Der Zeitstrahl zeigt für jede Woche, welcher Anteil der Kreise erhöht, auffällig oder stark auffällig war. Ein Klick auf eine Woche zeigt deren Lage.
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset=".github/bilder/zeitstrahl-dunkel.png">
-  <img src=".github/bilder/zeitstrahl-hell.png" alt="Zeitstrahl mit dem Anteil der Kreise je Empfehlung und Kennzahlen der gewählten Woche" width="100%">
+  <img src=".github/bilder/zeitstrahl-hell.png" alt="Zeitstrahl mit dem Anteil der Kreise je Lagestufe und Kennzahlen der gewählten Woche" width="100%">
 </picture>
 
 ## Unterwegs und offline
@@ -80,9 +80,9 @@ Jede Farbe ist eine Empfehlung. Sie ergibt sich aus zwei Fragen:
 ## Grenzen
 
 - Proof of Concept einer Hochschularbeit, kein amtliches Produkt.
-- Beobachten, prüfen und informieren sind Empfehlungen. Über Maßnahmen entscheidet die zuständige Behörde.
+- Die Lagestufe beschreibt, wie auffällig die Lage ist; sie ist keine Maßnahme. Über Maßnahmen entscheidet die zuständige Behörde.
 - Die jüngsten Wochen sind vorläufig, Nachmeldungen sind möglich.
-- Ob eine Empfehlung im Einzelfall richtig lag, lässt sich mit offenen Daten nicht prüfen; Ausbruchsmeldungen der Gesundheitsämter sind nicht öffentlich.
+- Ob eine Lagestufe im Einzelfall zutraf, lässt sich mit offenen Daten nicht prüfen; Ausbruchsmeldungen der Gesundheitsämter sind nicht öffentlich.
 
 ## Daten und Technik
 
