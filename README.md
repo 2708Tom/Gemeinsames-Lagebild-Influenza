@@ -1,6 +1,6 @@
 <div align="center">
 
-# Gemeinsames Lagebild Influenza
+<img src=".github/bilder/link-vorschau.png" alt="Gemeinsames Lagebild Influenza" width="100%">
 
 **Wo in Deutschland ist Influenza gerade ungewöhnlich, und was folgt daraus?**<br>
 Jede Woche für alle 400 Kreise und 16 Länder: Last, Erwartung und Lagestufe, dazu Abwasser und Prognose.
