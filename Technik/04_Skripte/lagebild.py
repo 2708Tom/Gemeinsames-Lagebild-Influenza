@@ -7,7 +7,7 @@ Ablauf:
 3. Abweichung: Wochen t−2 bis t gegen die Erwartung des Einordnungsmodells vom Stand t−4, als Faktor gemeldet ÷ erwartet.
 4. Stufe: leicht / deutlich über der Erwartung ab dem 90- bzw. 98-%-Wert, je Kalendermonat, aus den Saisons ab 2023.
    Ist das Abwasser erhöht, gilt „deutlich“ schon ab dem 95-%-Wert (Abwasser verstärkt, ist aber keine Voraussetzung).
-5. Last (wie viel Influenza da ist, Grenzen nach der Moving Epidemic Method) × Stufe → empfohlene Maßnahme.
+5. Last (wie viel Influenza da ist, Grenzen nach der Moving Epidemic Method) × Stufe → Lagestufe.
 
 Fachliche Annahmen (Notebook 21, seit 19.11.2026): Testsprung seit der Pandemie (Schwellen und Last nur aus Saisons ab 2023),
 MEM für die Last. Geprüft und am 22.11.2026 nicht übernommen, weil der Nutzen im Bereich der Zufallsschwankung lag:
@@ -257,7 +257,7 @@ def prognose_band(v, saisons):
 
 
 # ---------------------------------------------------------------------------------------------------
-# 3. bis 5. Abweichung, Stufe, Last, Maßnahme
+# 3. bis 5. Abweichung, Stufe, Last, Lagestufe
 # ---------------------------------------------------------------------------------------------------
 H_BEWERTUNG = [2, 3, 4]                     # am Stichtag t: Wochen t−2 bis t gegen die Erwartung vom Stand t−4
 Q_LEICHT, Q_DEUTLICH, Q_DEUTLICH_ABW = 0.90, 0.98, 0.95     # 98 % ist eine Setzung (Konvention), Sensitivität in Notebook 21
@@ -323,7 +323,7 @@ def stufen_vergeben(b, schwellen, nach="Monat"):
     s = schwellen.set_index(nach).reindex(b[nach])
     a = b["abweichung"].values
     abw_hoch = b["abw"].values >= s["abwasser"].values                      # fehlt das Abwasser, ist das False
-    b["Abwasser"] = np.where(b["abw"].isna(), "nicht verfügbar", np.where(abw_hoch, "erhöht", "unauffällig"))
+    b["Abwasser"] = np.where(b["abw"].isna(), "nicht gemessen", np.where(abw_hoch, "erhöht", "normal"))
     deutlich = (a >= s["deutlich"].values) | ((a >= s["deutlich_abw"].values) & abw_hoch)
     b["Stufe"] = np.select([deutlich, a >= s["leicht"].values], STUFEN[2:0:-1], STUFEN[0])
     return b
@@ -337,7 +337,7 @@ def stufen_vergeben(b, schwellen, nach="Monat"):
 LAST_SAISONEN = [2023, 2024, 2025, 2026]
 MEM_NIVEAU = {"mittel": 0.40, "hoch": 0.90}         # MEM „very high“ (97,5 %) wird nicht genutzt
 LAST = ["niedrig", "mittel", "hoch"]
-MASSNAHMEN = ["keine Maßnahme", "beobachten", "prüfen", "prüfen und informieren"]   # grün, gelb, orange, rot
+MASSNAHMEN = ["unauffällig", "erhöht", "auffällig", "stark auffällig"]   # Lagestufen: grün, gelb, orange, rot
 
 
 def last_schwellen(daten, saisons=LAST_SAISONEN, niveau=MEM_NIVEAU):
@@ -354,14 +354,14 @@ def last_schwellen(daten, saisons=LAST_SAISONEN, niveau=MEM_NIVEAU):
 
 def massnahme(last, deutlich):
     """Matrix Last × Erwartung. last: 0 niedrig, 1 mittel, 2 hoch. deutlich: deutlich über der Erwartung.
-    niedrig → keine Maßnahme / beobachten; mittel → beobachten / prüfen; hoch → prüfen / prüfen und informieren.
+    niedrig → unauffällig / erhöht; mittel → erhöht / auffällig; hoch → auffällig / stark auffällig.
     Rückgabe 0 bis 3 (Index in MASSNAHMEN)."""
     last, d = np.asarray(last), np.asarray(deutlich, dtype=bool)
     return np.select([(last == 2) & d, (last == 2) | ((last == 1) & d), (last == 1) | d], [3, 2, 1], 0)
 
 
 def lage_bewerten(alle, abw, schwellen, grenzen):
-    """Alle Kreis-Wochen bewerten: Abweichung, Stufe, Abwasser, Last und empfohlene Maßnahme."""
+    """Alle Kreis-Wochen bewerten: Abweichung, Stufe, Abwasser, Last und Lagestufe."""
     b = stufen_vergeben(bloecke_bilden(alle, abw), schwellen)
     g = b["Gemeldet"].values
     b["Last"] = np.select([g >= grenzen["hoch"], g >= grenzen["mittel"]], [2, 1], 0)
@@ -370,7 +370,7 @@ def lage_bewerten(alle, abw, schwellen, grenzen):
 
 
 def spitzenwochen(b, daten):
-    """Je Saison die Woche mit der höchsten Inzidenz in Deutschland und der Anteil der Einheiten je Maßnahme (in %)."""
+    """Je Saison die Woche mit der höchsten Inzidenz in Deutschland und der Anteil der Einheiten je Lagestufe (in %)."""
     bund = daten.groupby(["Saison", "Wochenbeginn"])[["Faelle", "Einwohner"]].sum()
     bund = (bund["Faelle"] / bund["Einwohner"]).reset_index(name="bund")
     spitze = bund.loc[bund.groupby("Saison")["bund"].idxmax(), ["Saison", "Wochenbeginn"]].rename(columns={"Wochenbeginn": "Woche_t"})

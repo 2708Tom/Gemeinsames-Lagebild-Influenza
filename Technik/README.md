@@ -4,11 +4,11 @@ Wie das Lagebild entsteht, wie man es selbst rechnet und woher die Daten kommen.
 
 ## Ablauf
 
-Jeden Donnerstag um 6 Uhr (Winterzeit) startet auf GitHub der Workflow „Lagebild aktualisieren“ (`.github/workflows/lagebild.yml`, Reiter „Actions“). Er läuft auf einem Linux-Rechner von GitHub:
+Jeden Montag und Donnerstag um 6:17 Uhr (Winterzeit) startet auf GitHub der Workflow „Lagebild aktualisieren“ (`.github/workflows/lagebild.yml`, Reiter „Actions“). Er läuft auf einem Linux-Rechner von GitHub:
 
 1. Abruf der Meldefälle Influenza je Kreis und Woche (RKI SurvStat, laufendes und voriges Jahr, damit Nachmeldungen ankommen) und des Abwassers je Klärwerk (RKI AMELAG).
 2. Aufbereitung in den Notebooks 01, 03 und 15: Berliner Bezirke zu Berlin zusammenfassen, Inzidenz je 100.000, Abwasser je Kreis.
-3. Rechnung in `lagebild_erzeugen.py`: Erwartung und Prognose (XGBoost), Last nach MEM, Stufe und empfohlene Maßnahme für alle Wochen ab Saison 2023, je Kreis und Land.
+3. Rechnung in `lagebild_erzeugen.py`: Erwartung und Prognose (XGBoost), Last nach MEM, Stufe gegenüber der Erwartung und Lagestufe für alle Wochen ab Saison 2023, je Kreis und Land.
 4. Die fertige Seite `08_Lagebild/Lagebild.html` und die neuen Daten werden im Repository gespeichert und als Website veröffentlicht.
 
 Von Hand starten: Reiter „Actions“, „Lagebild aktualisieren“, „Run workflow“.
@@ -52,3 +52,5 @@ Schwellen und Mischungsgewichte stammen aus der Prüfung über frühere Saisons 
 - Abwasser: Robert Koch-Institut, Abwassersurveillance AMELAG, [GitHub](https://github.com/robert-koch-institut/Abwassersurveillance_AMELAG), Lizenz CC BY 4.0
 - Einwohner: Statistische Ämter des Bundes und der Länder, Regionaldatenbank Deutschland, Tabelle 12411-01-01-4, Lizenz dl-de/by-2-0
 - Kreisgrenzen: © GeoBasis-DE / BKG (VG250), Lizenz dl-de/by-2-0
+
+Der eigene Code, die Website-Vorlage und die Texte dieses Repositorys stehen unter CC BY 4.0 (siehe [LICENSE](../LICENSE)); für die Daten gelten die oben genannten Lizenzen der Quellen.

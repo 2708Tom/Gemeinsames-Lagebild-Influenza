@@ -22,7 +22,7 @@ ORDNER = BASIS / "02_Daten" / "aufbereitet"
 AUSGABE = BASIS / "08_Lagebild"
 ERREGER = {"Influenza": "Influenza"}                # Schlüssel der Website-Daten (seit 16.11.2026 nur Influenza)
 AB = pd.Timestamp("2022-10-03")                     # Website ab Saison 2023 (hält die Seite klein)
-ABWASSER = {"nicht verfügbar": 0, "unauffällig": 1, "erhöht": 2}
+ABWASSER = {"nicht gemessen": 0, "normal": 1, "erhöht": 2}
 
 
 def laden():
